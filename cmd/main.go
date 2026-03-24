@@ -28,12 +28,4 @@ func main() {
 
 	generator.Generate()
 
-	// file, err := os.OpenFile("gatekeeper.go", os.O_WRONLY|os.O_CREATE, 0777)
-	//
-	// err = templates.ExecuteTemplate(file, "base", t)
-	// if err != nil {
-	// 	panic(err)
-	// }
-	// defer file.Close()
-
 }

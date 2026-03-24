@@ -2,11 +2,10 @@
 objects:
   - name: User
     package: example
-    path: example
+    path: ./example/
     fields:
       - name: FirstName
         kind: string
-        formName: "first name"
         minLen: 3
         maxLen: 10
 

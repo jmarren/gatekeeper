@@ -15,7 +15,7 @@ func NewGenerator(path string) *Generator {
 }
 
 func (g *Generator) Generate() {
-
+	// generate each object using the provided templates
 	for _, obj := range g.config.Objects {
 		obj.Generate(g.templates)
 	}
