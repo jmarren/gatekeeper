@@ -1,16 +1,6 @@
 {{ define "base" }}
-{{ $basePackage := .Package }}
-package {{ $basePackage }}
-
-import (
-	"net/http"
-	"strconv"
-	"fmt"
-	"slices"
-	"net/mail"
-)
+{{ template "header" . }}
 {{ template "typedef" . }}
 {{ template "constructor" . }}
-
 {{ end }}
 

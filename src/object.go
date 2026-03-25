@@ -2,9 +2,10 @@ package src
 
 import (
 	"os"
-	"slices"
 	"strings"
 	"text/template"
+
+	"github.com/jmarren/gatekeeper/src/util"
 )
 
 type Object struct {
@@ -12,6 +13,7 @@ type Object struct {
 	Package string   `yaml:"package"`
 	Fields  []*Field `yaml:"fields"`
 	Path    string   `yaml:"path"`
+	Imports []string
 }
 
 func (o *Object) outPath() string {
@@ -36,23 +38,26 @@ func (o *Object) init() {
 	}
 }
 
-func (o *Object) imports() []string {
-	imports := []string{"\"net/http\"", "\"fmt\""}
+func (o *Object) setImports() {
+	imports := util.NewStringSet()
+	imports.Add(HTTP)
+	imports.Add(FMT)
 	for _, field := range o.Fields {
-		if slices.Contains() {
-		}
+		field.addImports(imports)
 	}
-	return imports
+	o.Imports = imports.ToSlice()
 }
 
 func (o *Object) Generate(tmpl *template.Template) {
 
 	o.init()
+	o.setImports()
 
 	file := o.outFile()
 	defer file.Close()
 
 	err := tmpl.ExecuteTemplate(file, "base", o)
+
 	if err != nil {
 		panic(err)
 	}

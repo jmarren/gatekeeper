@@ -1,0 +1,9 @@
+{{ define "header" }}
+package {{ .Package }}
+
+import (
+{{ range .Imports }}{{ . }}
+{{ end }})
+
+
+{{ end }}

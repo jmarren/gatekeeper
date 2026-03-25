@@ -1,6 +1,10 @@
 package src
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/jmarren/gatekeeper/src/util"
+)
 
 type Field struct {
 	Name       string
@@ -9,20 +13,18 @@ type Field struct {
 	Validators `yaml:"validators,inline"`
 }
 
-func (f *Field) imports() []string {
-	imports := []string{}
+func (f *Field) addImports(s *util.StringSet) {
 	if f.Email {
-		imports = append(imports, "\"net/email\"")
+		s.Add(MAIL)
 	}
 	if len(f.Options) > 0 {
-		imports = append(imports, "\"slices\"")
+		s.Add(SLICES)
 	}
 
 	if f.Kind == "int" {
-		imports = append(imports, "\"strconv\"")
+		s.Add(STRCONV)
 	}
 
-	return imports
 }
 
 func (f *Field) init() {

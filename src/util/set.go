@@ -20,3 +20,11 @@ func (s *StringSet) Has(str string) bool {
 func (s *StringSet) Delete(str string) {
 	delete(*s, str)
 }
+
+func (s *StringSet) ToSlice() []string {
+	out := []string{}
+	for str := range *s {
+		out = append(out, str)
+	}
+	return out
+}

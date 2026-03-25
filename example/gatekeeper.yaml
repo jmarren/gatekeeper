@@ -6,7 +6,9 @@ objects:
     fields:
       - name: FirstName
         kind: string
-        minLen: 3
+        minLen: 
+          - value: 3
+          - err: "First Name must be >= 3"
         maxLen: 10
 
       - name: LastName
