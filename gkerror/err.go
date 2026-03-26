@@ -42,6 +42,13 @@ func (v *ValidationErrGroup) ByField(field string) *ValidationErrGroup {
 	return out
 }
 
+// func hi() {
+// 	minLenErr := func(received int) ValidationErr {
+// 		return NewValidationErr("FirstName", received, 3, "must be >= %(value)")
+// 	}
+//
+// }
+
 type validationErr struct {
 	field        string
 	received     any

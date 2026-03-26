@@ -3,10 +3,4 @@
 	if err != nil {
 		errs = append(errs, fmt.Errorf("{{ .FormName }} must be int"))
 	}
-	
-	{{ if .Validators.Min }}{{ template "min" . }}{{ end }}
-	{{ if .Validators.Max }}{{ template "max" . }}{{ end }}
-	{{ if  .Validators.Options }}{{ template "int_options" . }}{{ end }}
-        {{ if  .Validators.Custom }}{{ template "custom" . }}{{ end }}
-
 {{ end }}

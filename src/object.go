@@ -48,7 +48,6 @@ func (o *Object) init() {
 func (o *Object) setImports() {
 	imports := util.NewStringSet()
 	imports.Add(HTTP)
-	imports.Add(FMT)
 	imports.Add(GATEKEEPER_ERR)
 	for _, field := range o.Fields {
 		field.addImports(imports)
@@ -58,7 +57,19 @@ func (o *Object) setImports() {
 
 func (o *Object) WriteFields(w io.Writer) {
 	for _, f := range o.Fields {
-		f.Write(w)
+		f.WriteValidation(w)
+	}
+}
+
+func (o *Object) WriteErrorInits(w io.Writer) {
+	for _, f := range o.Fields {
+		f.WriteErrorInits(w)
+	}
+}
+
+func (o *Object) WriteErrorVars(w io.Writer) {
+	for _, f := range o.Fields {
+		f.WriteErrorVars(w)
 	}
 }
 
@@ -77,6 +88,27 @@ func (o *Object) Generate() {
 		panic(err)
 	}
 
+	err = templates.Tmpl.ExecuteTemplate(file, "typedef", o)
+
+	if err != nil {
+		panic(err)
+	}
+
+	o.WriteErrorVars(file)
+
+	_, err = file.WriteString("\nfunc init() {\n")
+
+	if err != nil {
+		panic(err)
+	}
+	o.WriteErrorInits(file)
+
+	_, err = file.WriteString("}\n")
+
+	if err != nil {
+		panic(err)
+	}
+
 	err = templates.Tmpl.ExecuteTemplate(file, "constructor", o)
 
 	if err != nil {
@@ -85,7 +117,7 @@ func (o *Object) Generate() {
 
 	o.WriteFields(file)
 
-	_, err = file.WriteString("\n}")
+	_, err = file.WriteString("\n\treturn x, errGroup \n}")
 
 	if err != nil {
 		panic(err)

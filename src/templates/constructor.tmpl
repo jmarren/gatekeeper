@@ -1,5 +1,5 @@
 {{ define "constructor" }}
-func New{{ .Name }}(r *http.Request) (*{{.Name}}, []error) {
+func New{{ .Name }}(r *http.Request) (*{{.Name}}, *gkerror.ValidationErrGroup) {
 	errGroup := gkerror.NewValidationErrGroup()
 	x := new({{ .Name }})
 {{ end }}

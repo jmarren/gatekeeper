@@ -24,7 +24,7 @@ type Validators struct {
 type ValidatorSpec struct {
 	Name   string
 	Value  any
-	FmtErr string
+	FmtErr string `yaml:"error"`
 }
 
 func (v *ValidatorSpec) addImports(s util.StringSet) {
@@ -35,16 +35,30 @@ func (v *ValidatorSpec) addImports(s util.StringSet) {
 		s.Add(MAIL)
 
 	}
-
 }
 
-func (v *ValidatorSpec) Write(field *Field, w io.Writer) {
-
-	// exec := templateExecutor(field, w)
+func (v *ValidatorSpec) WriteErrVar(field *Field, w io.Writer) {
 	switch v.Name {
 	case "minLen":
 		minLen := NewMinLen(field, v)
-		minLen.Write(w)
+		minLen.WriteErrVar(w)
+	}
+}
+
+func (v *ValidatorSpec) WriteErrInits(field *Field, w io.Writer) {
+	switch v.Name {
+	case "minLen":
+		minLen := NewMinLen(field, v)
+		minLen.WriteErrorInit(w)
+	}
+}
+
+func (v *ValidatorSpec) WriteValidation(field *Field, w io.Writer) {
+
+	switch v.Name {
+	case "minLen":
+		minLen := NewMinLen(field, v)
+		minLen.WriteValidation(w)
 		// case "maxLen":
 		// exec("max_len")
 
