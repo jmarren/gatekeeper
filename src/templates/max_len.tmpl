@@ -1,5 +1,5 @@
 {{ define "max_len" }}
-	if len(x.{{.Name}}) > {{ .Validators.MaxLen }} {
-		errs = append(errs, fmt.Errorf("{{ .FormName }} must be <= {{ .Validators.MaxLen }} characters long"))
+	if len(x.{{ .FieldName}}) > {{ .Value }} {
+		errGroup.Add({{ .FieldName}}MaxLenErr(len(x.{{ .FieldName}})))
 	}
 {{ end }}

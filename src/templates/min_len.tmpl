@@ -1,5 +1,6 @@
 {{ define "min_len" }}
-	if len(x.{{.FieldName}}) < {{ .Value }} {
-		errGroup.Add({{ .FieldName}}MinLenErr(x.{{ .FieldName }}))
+	{{ .FieldName }}Len := len(x.{{.FieldName}})
+	if {{ .FieldName}}Len < {{ .Value }} {
+		errGroup.Add({{ .FieldName}}MinLenErr({{ .FieldName }}Len))
 	}
 {{ end }}

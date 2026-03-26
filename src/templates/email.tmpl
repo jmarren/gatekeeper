@@ -1,9 +1,8 @@
 {{ define "email" }}
-    address, err := mail.ParseAddress(x.{{ .Name }})
-    if err != nil {
-	    errs = append(errs, fmt.Errorf("invalid email provided for {{ .Name }}"))
-    } else {
-	x.{{ .Name }} = address.Address
-    }
-	
+	address, err := mail.ParseAddress(x.{{ .FieldName }})
+	if err != nil {
+	    	errGroup.Add({{ .FieldName }}EmailErr(x.{{ .FieldName }}))
+	} else {
+		x.{{ .FieldName }} = address.Address
+    	}
 {{ end }}

@@ -16,6 +16,21 @@ type ValidationErrGroup struct {
 	errs []ValidationErr
 }
 
+func (v *ValidationErrGroup) Print() {
+	for _, err := range v.errs {
+		fmt.Println(err.Error())
+	}
+}
+
+func (v *ValidationErrGroup) String() string {
+	out := ""
+	for _, err := range v.errs {
+		out += "\n"
+		out += err.Error()
+	}
+	return out
+}
+
 func NewValidationErrGroup() *ValidationErrGroup {
 	return new(ValidationErrGroup)
 }

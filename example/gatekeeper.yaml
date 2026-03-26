@@ -10,9 +10,10 @@ objects:
         validators:
           - name: minLen
             value: 3
-            error: "%(field) must be >= %(expected)"
-        minLen: 3
-        maxLen: 10
+            error: "%(field) must be >= %(expected) characters"
+          - name: maxLen
+            value: 10
+            error: "%(field) must be <= %(expected) characters"
 
       - name: LastName
         kind: string
@@ -30,25 +31,29 @@ objects:
             
       - name: Email
         kind: string
-        email: true
+        validators:
+          - name: email
+            error: "Email must a a valid email"
         
 
       - name: BirthMonth
         kind: string
         formName: birth month
-        options: 
-          - January
-          - February
-          - March
-          - April
-          - May
-          - June
-          - July
-          - August
-          - September
-          - October
-          - November
-          - December
+        validators:
+          - name: option
+            value:
+              - January
+              - February
+              - March
+              - April
+              - May
+              - June
+              - July
+              - August
+              - September
+              - October
+              - November
+              - December
 
   - name: Search
     package: example

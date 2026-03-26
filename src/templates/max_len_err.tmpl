@@ -1,0 +1,5 @@
+{{ define "max_len_err" }}
+var {{ .FieldName }}MaxLenErr func(received any) gkerror.ValidationErr = func(received any) gkerror.ValidationErr {
+		return gkerror.NewValidationErr("{{ .FormName }}",  received, {{ .Value }}, "{{ .FmtError}}" )
+}
+{{ end }}

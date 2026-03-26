@@ -29,7 +29,7 @@ type ValidatorSpec struct {
 
 func (v *ValidatorSpec) addImports(s util.StringSet) {
 	switch v.Name {
-	case "options":
+	case "option":
 		s.Add(SLICES)
 	case "email":
 		s.Add(MAIL)
@@ -42,6 +42,15 @@ func (v *ValidatorSpec) WriteErr(field *Field, w io.Writer) {
 	case "minLen":
 		minLen := NewMinLen(field, v)
 		minLen.WriteError(w)
+	case "maxLen":
+		maxLen := NewMaxLen(field, v)
+		maxLen.WriteError(w)
+	case "email":
+		email := NewEmail(field, v)
+		email.WriteError(w)
+	case "option":
+		option := NewOption(field, v)
+		option.WriteError(w)
 	}
 }
 
@@ -51,8 +60,14 @@ func (v *ValidatorSpec) WriteValidation(field *Field, w io.Writer) {
 	case "minLen":
 		minLen := NewMinLen(field, v)
 		minLen.WriteValidation(w)
-		// case "maxLen":
-		// exec("max_len")
-
+	case "maxLen":
+		maxLen := NewMaxLen(field, v)
+		maxLen.WriteValidation(w)
+	case "email":
+		email := NewEmail(field, v)
+		email.WriteValidation(w)
+	case "option":
+		option := NewOption(field, v)
+		option.WriteValidation(w)
 	}
 }

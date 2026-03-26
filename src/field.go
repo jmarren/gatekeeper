@@ -41,14 +41,6 @@ func (f *Field) WriteAssignment(w io.Writer) {
 
 }
 
-//
-// func (f *Field) WriteKindErrVar(w io.Writer) {
-// 	err := templates.Tmpl.ExecuteTemplate(w, "kind_err_var", f)
-// 	if err != nil {
-// 		panic(err)
-// 	}
-// }
-
 func (f *Field) WriteValidation(w io.Writer) {
 	f.WriteAssignment(w)
 	for _, v := range f.Validators {
@@ -76,4 +68,16 @@ func (f *Field) init() {
 	if f.FormName == "" {
 		f.FormName = f.Name
 	}
+
+	if f.FmtKindErr == "" {
+		f.FmtKindErr = f.FormName + " must be "
+		if f.Kind == "int" {
+			f.FmtKindErr += "an int"
+		}
+
+		if f.Kind == "string" {
+			f.FmtKindErr += "a string"
+		}
+	}
+
 }

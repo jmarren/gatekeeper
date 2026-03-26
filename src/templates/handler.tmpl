@@ -1,0 +1,9 @@
+{{ define "handler" }}
+type {{ .Name }}Handler func(w http.ResponseWriter, r *http.Request, {{ .Name }} *{{ .Name }}, errs *gkerror.ValidationErrGroup)
+func New{{ .Name }}Handler(h {{ .Name }}Handler) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		x, errs := New{{ .Name }}(r)
+		h(w, r, x, errs)
+	}
+}
+{{ end }}

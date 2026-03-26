@@ -1,0 +1,15 @@
+{{ define "option_var" }}
+var {{ .FieldName }}Options []string = []string{ {{ joinStrs .Value }} }
+{{ end }}
+
+{{ define "option_err" }}
+var {{ .FieldName }}OptionErr func(received any) gkerror.ValidationErr = func(received any) gkerror.ValidationErr {
+	return gkerror.NewValidationErr("{{ .FormName }}",  received, {{ .FieldName }}Options, "{{ .FmtError}}" )
+}
+{{ end }}
+
+{{ define "option" }}
+	if !slices.Contains({{ .FieldName }}Options, x.{{ .FieldName }}) {
+		errGroup.Add({{ .FieldName }}OptionErr(x.{{ .FieldName }}))
+	}
+{{ end }}

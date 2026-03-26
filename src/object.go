@@ -112,4 +112,9 @@ func (o *Object) Generate() {
 		panic(err)
 	}
 
+	err = templates.Tmpl.ExecuteTemplate(file, "handler", o)
+
+	if err != nil {
+		panic(err)
+	}
 }
