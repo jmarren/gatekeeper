@@ -1,4 +1,5 @@
 
+
 objects:
   - name: User
     package: example

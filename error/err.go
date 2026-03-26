@@ -1,4 +1,4 @@
-package example
+package gkerror
 
 import (
 	"fmt"
@@ -44,15 +44,15 @@ func (v *ValidationErrGroup) ByField(field string) *ValidationErrGroup {
 
 type validationErr struct {
 	field        string
-	value        any
+	received     any
 	expected     any
 	formatString string
 	fmtParams    []any
 }
 
-func newValidationErr(field string, value any, expected any, formatString string) ValidationErr {
+func NewValidationErr(field string, received any, expected any, formatString string) ValidationErr {
 
-	valueIndex := strings.Index(formatString, "%(value)")
+	valueIndex := strings.Index(formatString, "%(received)")
 	expectedIndex := strings.Index(formatString, "%(expected)")
 	fieldIndex := strings.Index(formatString, "%(field)")
 
@@ -61,8 +61,8 @@ func newValidationErr(field string, value any, expected any, formatString string
 	indexes := make(map[int]string)
 
 	for valueIndex != -1 {
-		indexes[valueIndex] = "value"
-		valueIndex = strings.Index(formatString[valueIndex+1:], "%(value)")
+		indexes[valueIndex] = "received"
+		valueIndex = strings.Index(formatString[valueIndex+1:], "%(received)")
 	}
 
 	for expectedIndex != -1 {
@@ -85,8 +85,8 @@ func newValidationErr(field string, value any, expected any, formatString string
 
 	for _, key := range keys {
 		switch indexes[key] {
-		case "value":
-			fmtParams = append(fmtParams, value)
+		case "received":
+			fmtParams = append(fmtParams, received)
 		case "expected":
 			fmtParams = append(fmtParams, expected)
 		case "field":
@@ -94,15 +94,13 @@ func newValidationErr(field string, value any, expected any, formatString string
 		}
 	}
 
-	formatString = strings.ReplaceAll(formatString, "%(value)", "%v")
+	formatString = strings.ReplaceAll(formatString, "%(received)", "%v")
 	formatString = strings.ReplaceAll(formatString, "%(expected)", "%v")
 	formatString = strings.ReplaceAll(formatString, "%(field)", "%s")
 
-	fmt.Println(formatString)
-
 	return &validationErr{
 		field,
-		value,
+		received,
 		expected,
 		formatString,
 		fmtParams,

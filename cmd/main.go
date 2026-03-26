@@ -24,8 +24,8 @@ func main() {
 
 	path := os.Args[1]
 
-	generator := src.NewGenerator(path)
+	cfg := src.NewConfig(path)
 
-	generator.Generate()
+	cfg.Generate()
 
 }

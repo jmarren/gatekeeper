@@ -7,7 +7,7 @@ import (
 )
 
 // returns the path to this directory
-func DirPath() string {
+func dirPath() string {
 	path, err := util.GetBasePath()
 
 	if err != nil {

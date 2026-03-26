@@ -2,6 +2,7 @@ package src
 
 import (
 	"fmt"
+	"io"
 
 	"github.com/jmarren/gatekeeper/src/util"
 )
@@ -9,31 +10,49 @@ import (
 type Field struct {
 	Name       string
 	Kind       string
-	FormName   string `yaml:"formName"`
-	Validators `yaml:"validators,inline"`
+	FormName   string           `yaml:"formName"`
+	Validators []*ValidatorSpec `yaml:"validators"`
+	// Validators `yaml:"validators,inline"`
 }
 
-func (f *Field) addImports(s *util.StringSet) {
-	if f.Email {
-		s.Add(MAIL)
-	}
-	if len(f.Options) > 0 {
-		s.Add(SLICES)
+func (f *Field) addImports(s util.StringSet) {
+
+	for _, v := range f.Validators {
+		v.addImports(s)
 	}
 
 	if f.Kind == "int" {
 		s.Add(STRCONV)
 	}
-
 }
 
-func (f *Field) init() {
+// type Validator interface {
+// 	Write(w io.Writer)
+// }
 
-	fmt.Printf("f.FormName = %s\n", f.FormName)
+func (f *Field) Write(w io.Writer) {
+	for _, v := range f.Validators {
+		v.Write(f, w)
+	}
+}
+
+// func (f *Field) Validators() []Validator {
+// 	for _, v := range f.Validators {
+// 		swi
+// 	}
+// }
+
+func (f *Field) init() {
 
 	// set FormName to Name if not provided
 	if f.FormName == "" {
 		f.FormName = f.Name
+	}
+
+	for _, v := range f.Validators {
+		if v.Name == "minLen" {
+			fmt.Printf("minLen value = %v\n", v.Value)
+		}
 	}
 
 	fmt.Printf("f.FormName = %s\n", f.FormName)

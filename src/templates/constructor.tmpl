@@ -1,10 +1,5 @@
 {{ define "constructor" }}
 func New{{ .Name }}(r *http.Request) (*{{.Name}}, []error) {
-	var err error
-	var errs []error
+	errGroup := gkerror.NewValidationErrGroup()
 	x := new({{ .Name }})
-{{ range .Fields }}{{ template "kind" . }}{{ end }}
-	return x, errs
-
-}
 {{ end }}

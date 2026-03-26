@@ -1,10 +1,11 @@
 package src
 
 import (
+	"io"
 	"os"
 	"strings"
-	"text/template"
 
+	"github.com/jmarren/gatekeeper/src/templates"
 	"github.com/jmarren/gatekeeper/src/util"
 )
 
@@ -16,13 +17,17 @@ type Object struct {
 	Imports []string
 }
 
+// generate the outPath for this object
 func (o *Object) outPath() string {
+	// allow for {path}, /{path}, and ./{path} formats
 	path, _ := strings.CutSuffix(o.Path, "/")
 	path, _ = strings.CutPrefix(path, "./")
 	path, _ = strings.CutPrefix(path, "/")
+	// concatenate .gatekeeper.go to file name
 	return path + "/" + o.Name + ".gatekeeper.go"
 }
 
+// open the outfile for this object and return it
 func (o *Object) outFile() *os.File {
 	file, err := os.OpenFile(o.outPath(), os.O_WRONLY|os.O_CREATE, 0777)
 
@@ -32,23 +37,33 @@ func (o *Object) outFile() *os.File {
 	return file
 }
 
+// range over fields and call init for each field
 func (o *Object) init() {
 	for _, field := range o.Fields {
 		field.init()
 	}
 }
 
+// range over fields and add any required imports to the imports set
 func (o *Object) setImports() {
 	imports := util.NewStringSet()
 	imports.Add(HTTP)
 	imports.Add(FMT)
+	imports.Add(GATEKEEPER_ERR)
 	for _, field := range o.Fields {
 		field.addImports(imports)
 	}
 	o.Imports = imports.ToSlice()
 }
 
-func (o *Object) Generate(tmpl *template.Template) {
+func (o *Object) WriteFields(w io.Writer) {
+	for _, f := range o.Fields {
+		f.Write(w)
+	}
+}
+
+// Generate the .gatekeeper.go file for this object
+func (o *Object) Generate() {
 
 	o.init()
 	o.setImports()
@@ -56,9 +71,24 @@ func (o *Object) Generate(tmpl *template.Template) {
 	file := o.outFile()
 	defer file.Close()
 
-	err := tmpl.ExecuteTemplate(file, "base", o)
+	err := templates.Tmpl.ExecuteTemplate(file, "header", o)
 
 	if err != nil {
 		panic(err)
 	}
+
+	err = templates.Tmpl.ExecuteTemplate(file, "constructor", o)
+
+	if err != nil {
+		panic(err)
+	}
+
+	o.WriteFields(file)
+
+	_, err = file.WriteString("\n}")
+
+	if err != nil {
+		panic(err)
+	}
+
 }

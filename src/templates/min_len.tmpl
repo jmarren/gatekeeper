@@ -1,5 +1,5 @@
 {{ define "min_len" }}
-	if len(x.{{.Name}}) < {{ .Validators.MinLen }} {
-		errs = append(errs, fmt.Errorf("{{ .FormName }} must be >= {{ .Validators.MinLen }} characters long"))
+	if len(x.{{.FieldName}}) < {{ .Value }} {
+		errs = append(errs, fmt.Errorf("{{ .FormName }} must be >= {{ .Value }} characters long"))
 	}
 {{ end }}

@@ -1,22 +1,22 @@
-package src
+package templates
 
 import (
 	"os"
 	"strings"
 	"text/template"
 
-	"github.com/jmarren/gatekeeper/src/templates"
 	"github.com/jmarren/gatekeeper/src/util"
 )
 
-func BuildTemplates() *template.Template {
+var Tmpl *template.Template
 
-	tmpl := template.New("base").Funcs(template.FuncMap{
+func init() {
+	Tmpl = template.New("base").Funcs(template.FuncMap{
 		"joinStrs": util.JoinStrings,
 		"join":     strings.Join,
 	})
 
-	templatesPath := templates.DirPath()
+	templatesPath := dirPath()
 
 	entries, err := os.ReadDir(templatesPath)
 
@@ -28,10 +28,8 @@ func BuildTemplates() *template.Template {
 	for _, entry := range entries {
 		name := entry.Name()
 		if strings.HasSuffix(name, ".tmpl") {
-			tmpl = template.Must(tmpl.ParseFiles(templatesPath + name))
+			Tmpl = template.Must(Tmpl.ParseFiles(templatesPath + name))
 		}
 	}
-
-	return tmpl
 
 }

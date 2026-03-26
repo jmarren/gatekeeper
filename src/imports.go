@@ -1,10 +1,11 @@
 package src
 
 const (
-	MAIL    = "\"net/mail\""
-	HTTP    = "\"net/http\""
-	STRCONV = "\"strconv\""
-	STRING  = "\"strconv\""
-	SLICES  = "\"slices\""
-	FMT     = "\"fmt\""
+	GATEKEEPER_ERR = "\"github.com/jmarren/gatekeeper/gkerror\""
+	MAIL           = "\"net/mail\""
+	HTTP           = "\"net/http\""
+	STRCONV        = "\"strconv\""
+	STRING         = "\"strconv\""
+	SLICES         = "\"slices\""
+	FMT            = "\"fmt\""
 )

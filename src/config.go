@@ -1,7 +1,6 @@
 package src
 
 import (
-	"fmt"
 	"os"
 
 	"gopkg.in/yaml.v3"
@@ -26,7 +25,11 @@ func NewConfig(path string) *Config {
 		panic(err)
 	}
 
-	fmt.Printf("cfg = %v\n", cfg)
-
 	return &cfg
+}
+
+func (c *Config) Generate() {
+	for _, obj := range c.Objects {
+		obj.Generate()
+	}
 }
