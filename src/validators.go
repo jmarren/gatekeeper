@@ -37,19 +37,11 @@ func (v *ValidatorSpec) addImports(s util.StringSet) {
 	}
 }
 
-func (v *ValidatorSpec) WriteErrVar(field *Field, w io.Writer) {
+func (v *ValidatorSpec) WriteErr(field *Field, w io.Writer) {
 	switch v.Name {
 	case "minLen":
 		minLen := NewMinLen(field, v)
-		minLen.WriteErrVar(w)
-	}
-}
-
-func (v *ValidatorSpec) WriteErrInits(field *Field, w io.Writer) {
-	switch v.Name {
-	case "minLen":
-		minLen := NewMinLen(field, v)
-		minLen.WriteErrorInit(w)
+		minLen.WriteError(w)
 	}
 }
 

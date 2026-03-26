@@ -6,6 +6,7 @@ objects:
     fields:
       - name: FirstName
         kind: string
+        kindErr: "%(field) must be a string"
         validators:
           - name: minLen
             value: 3

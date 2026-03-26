@@ -12,7 +12,7 @@ type Field struct {
 	Kind       string
 	FormName   string           `yaml:"formName"`
 	Validators []*ValidatorSpec `yaml:"validators"`
-	FmtKindErr string
+	FmtKindErr string           `yaml:"kindErr"`
 }
 
 func (f *Field) addImports(s util.StringSet) {
@@ -27,15 +27,27 @@ func (f *Field) addImports(s util.StringSet) {
 }
 
 func (f *Field) WriteAssignment(w io.Writer) {
+	var err error
 	switch f.Kind {
 	case "int":
-
+		err = templates.Tmpl.ExecuteTemplate(w, "int", f)
+	case "string":
+		err = templates.Tmpl.ExecuteTemplate(w, "string", f)
 	}
+
+	if err != nil {
+		panic(err)
+	}
+
 }
 
-func (f *Field) WriteKindErrVar(w io.Writer) {
-	templates.Tmpl.ExecuteTemplate(w, "kind_err_var", f)
-}
+//
+// func (f *Field) WriteKindErrVar(w io.Writer) {
+// 	err := templates.Tmpl.ExecuteTemplate(w, "kind_err_var", f)
+// 	if err != nil {
+// 		panic(err)
+// 	}
+// }
 
 func (f *Field) WriteValidation(w io.Writer) {
 	f.WriteAssignment(w)
@@ -44,20 +56,17 @@ func (f *Field) WriteValidation(w io.Writer) {
 	}
 }
 
-func (f *Field) WriteErrorVars(w io.Writer) {
-	f.WriteKindErrVar(w)
+func (f *Field) WriteErrors(w io.Writer) {
+	f.WriteKindErr(w)
 	for _, v := range f.Validators {
-		v.WriteErrVar(f, w)
+		v.WriteErr(f, w)
 	}
 }
 
-func (f *Field) WriteKindErrInit(w io.Writer) {
-
-}
-
-func (f *Field) WriteErrorInits(w io.Writer) {
-	for _, v := range f.Validators {
-		v.WriteErrInits(f, w)
+func (f *Field) WriteKindErr(w io.Writer) {
+	err := templates.Tmpl.ExecuteTemplate(w, "kind_err", f)
+	if err != nil {
+		panic(err)
 	}
 }
 

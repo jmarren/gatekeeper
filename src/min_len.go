@@ -29,14 +29,7 @@ func NewMinLen(f *Field, v *ValidatorSpec) *MinLen {
 	}
 }
 
-func (m *MinLen) WriteErrVar(w io.Writer) {
-	err := templates.Tmpl.ExecuteTemplate(w, "min_len_err_var", m)
-	if err != nil {
-		panic(err)
-	}
-}
-
-func (m *MinLen) WriteErrorInit(w io.Writer) {
+func (m *MinLen) WriteError(w io.Writer) {
 	err := templates.Tmpl.ExecuteTemplate(w, "min_len_err", m)
 	if err != nil {
 		panic(err)

@@ -1,0 +1,3 @@
+{{ define "kind_err" }}
+var {{ .Name }}KindErr gkerror.ValidationErr = gkerror.NewValidationErr("{{ .Name }}", nil, "{{ .Kind }}", "{{ .FmtKindErr }}" )
+{{ end }}

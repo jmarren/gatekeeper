@@ -61,15 +61,9 @@ func (o *Object) WriteFields(w io.Writer) {
 	}
 }
 
-func (o *Object) WriteErrorInits(w io.Writer) {
+func (o *Object) WriteErrors(w io.Writer) {
 	for _, f := range o.Fields {
-		f.WriteErrorInits(w)
-	}
-}
-
-func (o *Object) WriteErrorVars(w io.Writer) {
-	for _, f := range o.Fields {
-		f.WriteErrorVars(w)
+		f.WriteErrors(w)
 	}
 }
 
@@ -94,21 +88,16 @@ func (o *Object) Generate() {
 		panic(err)
 	}
 
-	o.WriteErrorVars(file)
+	o.WriteErrors(file)
 
-	_, err = file.WriteString("\nfunc init() {\n")
+	// o.WriteErrorInits(file)
 
-	if err != nil {
-		panic(err)
-	}
-	o.WriteErrorInits(file)
-
-	_, err = file.WriteString("}\n")
-
-	if err != nil {
-		panic(err)
-	}
-
+	// _, err = file.WriteString("}\n")
+	//
+	// if err != nil {
+	// 	panic(err)
+	// }
+	//
 	err = templates.Tmpl.ExecuteTemplate(file, "constructor", o)
 
 	if err != nil {
