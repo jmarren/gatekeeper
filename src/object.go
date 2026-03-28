@@ -16,31 +16,25 @@ type Object struct {
 
 func NewObject(spec *ObjectSpec) *Object {
 
-	fields := []*Field{}
-
 	builder := new(strings.Builder)
 
-	for _, fs := range spec.FieldSpecs {
-		field := NewField(fs, builder)
-		fields = append(fields, field)
-	}
-
-	imports := util.NewStringSet()
-	imports.Add(HTTP)
-	imports.Add(GATEKEEPER_ERR)
-
-	// merge imports from all fields
-	for _, field := range fields {
-		imports.Merge(field.imports)
-	}
-
-	return &Object{
+	o := &Object{
 		ObjectSpec: spec,
-		fields:     fields,
 		builder:    builder,
-		imports:    imports,
+		imports:    util.NewStringSet(),
+		fields:     []*Field{},
 	}
 
+	// add default imports
+	o.imports.Add(HTTP)
+	o.imports.Add(GATEKEEPER_ERR)
+
+	for _, fs := range spec.FieldSpecs {
+		field := NewField(fs, o)
+		o.fields = append(o.fields, field)
+	}
+
+	return o
 }
 
 func (o *Object) writeFields() {

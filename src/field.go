@@ -1,52 +1,50 @@
 package src
 
 import (
-	"io"
-
 	"github.com/jmarren/gatekeeper/src/templates"
 	"github.com/jmarren/gatekeeper/src/util"
 )
 
 type Field struct {
-	w io.Writer
+	obj *Object
 	*FieldSpec
 	Validators []Validator
-	imports    util.StringSet
 }
 
-func NewField(s *FieldSpec, w io.Writer) *Field {
+func NewField(spec *FieldSpec, obj *Object) *Field {
 
 	// set FormName to Name if not provided
-	if s.FormName == "" {
-		s.FormName = s.Name
+	if spec.FormName == "" {
+		spec.FormName = spec.Name
 	}
 
 	// set default KindErrs
-	if s.FmtKindErr == "" {
-		if s.Kind == "int" {
-			s.FmtKindErr = s.FormName + " must be an int"
+	if spec.FmtKindErr == "" {
+		if spec.Kind == "int" {
+			spec.FmtKindErr = spec.FormName + " must be an int"
 		}
-		if s.Kind == "string" {
-			s.FmtKindErr = s.FormName + " must be a string"
+		if spec.Kind == "string" {
+			spec.FmtKindErr = spec.FormName + " must be a string"
 		}
 	}
 
 	// create validators from fieldSpec
-	validators := s.Validators(w)
+	validators := spec.Validators(obj.builder)
 
-	// create imports set
-	imports := util.NewStringSet()
+	f := &Field{
+		obj:        obj,
+		FieldSpec:  spec,
+		Validators: []Validator{},
+	}
 
-	// merge in all validators imports
-	for _, v := range validators {
-		imports.Merge(v.imports())
+	for _, v := range spec.ValidationSpecs {
+		f.Validators = append(f.Validators, NewTemplateWriter(v, f))
 	}
 
 	return &Field{
-		w:          w,
-		FieldSpec:  s,
+		obj:        obj,
+		FieldSpec:  spec,
 		Validators: validators,
-		imports:    imports,
 	}
 }
 
@@ -62,9 +60,9 @@ func (f *Field) WriteAssignment() {
 	var err error
 	switch f.Kind {
 	case "int":
-		err = templates.Tmpl.ExecuteTemplate(f.w, "int", f)
+		err = templates.Tmpl.ExecuteTemplate(f.obj.builder, "int", f)
 	case "string":
-		err = templates.Tmpl.ExecuteTemplate(f.w, "string", f)
+		err = templates.Tmpl.ExecuteTemplate(f.obj.builder, "string", f)
 	default:
 		panic("kind must be string or int")
 	}
@@ -73,7 +71,7 @@ func (f *Field) WriteAssignment() {
 }
 
 func (f *Field) WriteErrors() {
-	err := templates.Tmpl.ExecuteTemplate(f.w, "kind_err", f)
+	err := templates.Tmpl.ExecuteTemplate(f.obj.builder, "kind_err", f)
 	util.PanicIf(err)
 	for _, v := range f.Validators {
 		v.WriteErr()

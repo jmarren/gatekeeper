@@ -1,41 +1,37 @@
 package src
 
 import (
-	"io"
+	"fmt"
 
 	"github.com/jmarren/gatekeeper/src/templates"
 	"github.com/jmarren/gatekeeper/src/util"
 )
 
-type Importer interface {
-	imports() util.StringSet
-}
-
 type TemplateWriter struct {
-	w     io.Writer
 	vSpec *ValidatorSpec
-	data  Importer
+	field *Field
+	data  any
 }
 
-func (t *TemplateWriter) imports() util.StringSet {
-	return t.data.imports()
-}
+func NewTemplateWriter(vSpec *ValidatorSpec, field *Field) *TemplateWriter {
 
-func NewTemplateWriter(vSpec *ValidatorSpec, field *FieldSpec, w io.Writer) *TemplateWriter {
+	fmt.Println("NewTemplateWriter")
 
-	t := &TemplateWriter{
-		w:     w,
-		vSpec: vSpec,
-	}
-
+	var data any
 	switch vSpec.Name {
 	case "minLen":
-		t.data = NewMinLen(field, vSpec)
+		data = NewMinLen(field, vSpec)
 	case "maxLen":
-		t.data = NewMaxLen(field, vSpec)
+		data = NewMaxLen(field, vSpec)
+	default:
+		panic(fmt.Errorf("no validator named %s", vSpec.Name))
 	}
 
-	return t
+	return &TemplateWriter{
+		vSpec,
+		field,
+		data,
+	}
 }
 
 func (t *TemplateWriter) errTemplateName() string {
@@ -43,11 +39,11 @@ func (t *TemplateWriter) errTemplateName() string {
 }
 
 func (t *TemplateWriter) WriteErr() {
-	err := templates.Tmpl.ExecuteTemplate(t.w, t.errTemplateName(), t.data)
+	err := templates.Tmpl.ExecuteTemplate(t.field.obj.builder, t.errTemplateName(), t.data)
 	util.PanicIf(err)
 }
 
 func (t *TemplateWriter) WriteValidation() {
-	err := templates.Tmpl.ExecuteTemplate(t.w, t.vSpec.Name, t.data)
+	err := templates.Tmpl.ExecuteTemplate(t.field.obj.builder, t.vSpec.Name, t.data)
 	util.PanicIf(err)
 }

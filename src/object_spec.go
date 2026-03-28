@@ -10,7 +10,6 @@ type ObjectSpec struct {
 	Package    string       `yaml:"package"`
 	FieldSpecs []*FieldSpec `yaml:"fields"`
 	Path       string       `yaml:"path"`
-	Imports    []string
 }
 
 // generate the outPath for this object

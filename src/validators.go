@@ -1,13 +1,8 @@
 package src
 
-import (
-	"github.com/jmarren/gatekeeper/src/util"
-)
-
 type Validator interface {
 	WriteErr()
 	WriteValidation()
-	imports() util.StringSet
 }
 
 type ValidatorSpec struct {
@@ -16,15 +11,15 @@ type ValidatorSpec struct {
 	FmtErr string `yaml:"error"`
 }
 
-func (v *ValidatorSpec) addImports(s util.StringSet) {
-	switch v.Name {
-	case "option":
-		s.Add(SLICES)
-	case "email":
-		s.Add(MAIL)
-
-	}
-}
+// func (v *ValidatorSpec) addImports(s util.StringSet) {
+// 	switch v.Name {
+// 	case "option":
+// 		s.Add(SLICES)
+// 	case "email":
+// 		s.Add(MAIL)
+//
+// 	}
+// }
 
 // func (v *ValidatorSpec) Validator(w io.Writer, f *FieldSpec) Validator {
 // 	return NewTemplateWriter(v, f, w)
