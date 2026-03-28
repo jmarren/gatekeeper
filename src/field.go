@@ -28,9 +28,6 @@ func NewField(spec *FieldSpec, obj *Object) *Field {
 		}
 	}
 
-	// create validators from fieldSpec
-	validators := spec.Validators(obj.builder)
-
 	f := &Field{
 		obj:        obj,
 		FieldSpec:  spec,
@@ -41,11 +38,7 @@ func NewField(spec *FieldSpec, obj *Object) *Field {
 		f.Validators = append(f.Validators, NewTemplateWriter(v, f))
 	}
 
-	return &Field{
-		obj:        obj,
-		FieldSpec:  spec,
-		Validators: validators,
-	}
+	return f
 }
 
 func (f *Field) WriteValidation() {

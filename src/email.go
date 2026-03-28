@@ -12,7 +12,7 @@ type Email struct {
 	FmtError  string
 }
 
-func NewEmail(f *Field, v *ValidatorSpec) *Email {
+func NewEmail(f *FieldSpec, v *ValidatorSpec) *Email {
 
 	return &Email{
 		FieldName: f.Name,
