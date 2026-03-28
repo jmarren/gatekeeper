@@ -11,8 +11,9 @@ func TestUser(t *testing.T) {
 
 	form := url.Values{}
 	form.Add("Email", "test@example.com")
-	form.Add("FirstName", "xy")
+	form.Add("FirstName", "wxyz")
 	form.Add("Age", "22")
+	form.Add("BirthMonth", "January")
 
 	// 2. Encode the form data into a bytes.Buffer
 	// The body of an http.Request needs to be an io.Reader

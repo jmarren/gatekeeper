@@ -1,10 +1,6 @@
 package src
 
-import (
-	"io"
-
-	"github.com/jmarren/gatekeeper/src/templates"
-)
+import "github.com/jmarren/gatekeeper/src/util"
 
 type MaxLen struct {
 	FieldName string
@@ -13,7 +9,11 @@ type MaxLen struct {
 	FmtError  string
 }
 
-func NewMaxLen(f *Field, v *ValidatorSpec) *MaxLen {
+func (m *MaxLen) imports() util.StringSet {
+	return util.NewStringSet()
+}
+
+func NewMaxLen(f *FieldSpec, v *ValidatorSpec) *MaxLen {
 
 	val, ok := v.Value.(int)
 
@@ -26,19 +26,5 @@ func NewMaxLen(f *Field, v *ValidatorSpec) *MaxLen {
 		FormName:  f.FormName,
 		Value:     val,
 		FmtError:  v.FmtErr,
-	}
-}
-
-func (m *MaxLen) WriteError(w io.Writer) {
-	err := templates.Tmpl.ExecuteTemplate(w, "max_len_err", m)
-	if err != nil {
-		panic(err)
-	}
-}
-
-func (m *MaxLen) WriteValidation(w io.Writer) {
-	err := templates.Tmpl.ExecuteTemplate(w, "max_len", m)
-	if err != nil {
-		panic(err)
 	}
 }

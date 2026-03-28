@@ -7,7 +7,7 @@ import (
 )
 
 type Config struct {
-	Objects []*Object `yaml:"objects"`
+	ObjectSpecs []*ObjectSpec `yaml:"objects"`
 }
 
 func NewConfig(path string) *Config {
@@ -29,7 +29,9 @@ func NewConfig(path string) *Config {
 }
 
 func (c *Config) Generate() {
-	for _, obj := range c.Objects {
-		obj.Generate()
+
+	for _, spec := range c.ObjectSpecs {
+		obj := NewObject(spec)
+		obj.Write()
 	}
 }

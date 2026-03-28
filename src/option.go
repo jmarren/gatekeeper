@@ -14,7 +14,7 @@ type Option struct {
 	FmtError  string
 }
 
-func NewOption(f *Field, v *ValidatorSpec) *Option {
+func NewOption(f *FieldSpec, v *ValidatorSpec) *Option {
 
 	fmt.Printf("v.Value = %v\n", v.Value)
 

@@ -3,7 +3,7 @@ package src
 import (
 	"io"
 
-	"github.com/jmarren/gatekeeper/src/templates"
+	"github.com/jmarren/gatekeeper/src/util"
 )
 
 type MinLen struct {
@@ -11,9 +11,14 @@ type MinLen struct {
 	FormName  string
 	Value     int
 	FmtError  string
+	w         io.Writer
 }
 
-func NewMinLen(f *Field, v *ValidatorSpec) *MinLen {
+func (m *MinLen) imports() util.StringSet {
+	return util.NewStringSet()
+}
+
+func NewMinLen(f *FieldSpec, v *ValidatorSpec) *MinLen {
 
 	val, ok := v.Value.(int)
 
@@ -26,19 +31,5 @@ func NewMinLen(f *Field, v *ValidatorSpec) *MinLen {
 		FormName:  f.FormName,
 		Value:     val,
 		FmtError:  v.FmtErr,
-	}
-}
-
-func (m *MinLen) WriteError(w io.Writer) {
-	err := templates.Tmpl.ExecuteTemplate(w, "min_len_err", m)
-	if err != nil {
-		panic(err)
-	}
-}
-
-func (m *MinLen) WriteValidation(w io.Writer) {
-	err := templates.Tmpl.ExecuteTemplate(w, "min_len", m)
-	if err != nil {
-		panic(err)
 	}
 }

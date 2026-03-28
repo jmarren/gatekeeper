@@ -8,76 +8,74 @@ import (
 )
 
 type Field struct {
-	Name       string
-	Kind       string
-	FormName   string           `yaml:"formName"`
-	Validators []*ValidatorSpec `yaml:"validators"`
-	FmtKindErr string           `yaml:"kindErr"`
+	w io.Writer
+	*FieldSpec
+	Validators []Validator
+	imports    util.StringSet
 }
 
-func (f *Field) addImports(s util.StringSet) {
+func NewField(s *FieldSpec, w io.Writer) *Field {
+
+	// set FormName to Name if not provided
+	if s.FormName == "" {
+		s.FormName = s.Name
+	}
+
+	// set default KindErrs
+	if s.FmtKindErr == "" {
+		if s.Kind == "int" {
+			s.FmtKindErr = s.FormName + " must be an int"
+		}
+		if s.Kind == "string" {
+			s.FmtKindErr = s.FormName + " must be a string"
+		}
+	}
+
+	// create validators from fieldSpec
+	validators := s.Validators(w)
+
+	// create imports set
+	imports := util.NewStringSet()
+
+	// merge in all validators imports
+	for _, v := range validators {
+		imports.Merge(v.imports())
+	}
+
+	return &Field{
+		w:          w,
+		FieldSpec:  s,
+		Validators: validators,
+		imports:    imports,
+	}
+}
+
+func (f *Field) WriteValidation() {
+	f.WriteAssignment()
 
 	for _, v := range f.Validators {
-		v.addImports(s)
-	}
-
-	if f.Kind == "int" {
-		s.Add(STRCONV)
+		v.WriteValidation()
 	}
 }
 
-func (f *Field) WriteAssignment(w io.Writer) {
+func (f *Field) WriteAssignment() {
 	var err error
 	switch f.Kind {
 	case "int":
-		err = templates.Tmpl.ExecuteTemplate(w, "int", f)
+		err = templates.Tmpl.ExecuteTemplate(f.w, "int", f)
 	case "string":
-		err = templates.Tmpl.ExecuteTemplate(w, "string", f)
+		err = templates.Tmpl.ExecuteTemplate(f.w, "string", f)
+	default:
+		panic("kind must be string or int")
 	}
 
-	if err != nil {
-		panic(err)
-	}
-
+	util.PanicIf(err)
 }
 
-func (f *Field) WriteValidation(w io.Writer) {
-	f.WriteAssignment(w)
+func (f *Field) WriteErrors() {
+	err := templates.Tmpl.ExecuteTemplate(f.w, "kind_err", f)
+	util.PanicIf(err)
 	for _, v := range f.Validators {
-		v.WriteValidation(f, w)
+		v.WriteErr()
 	}
-}
-
-func (f *Field) WriteErrors(w io.Writer) {
-	f.WriteKindErr(w)
-	for _, v := range f.Validators {
-		v.WriteErr(f, w)
-	}
-}
-
-func (f *Field) WriteKindErr(w io.Writer) {
-	err := templates.Tmpl.ExecuteTemplate(w, "kind_err", f)
-	if err != nil {
-		panic(err)
-	}
-}
-
-func (f *Field) init() {
-
-	// set FormName to Name if not provided
-	if f.FormName == "" {
-		f.FormName = f.Name
-	}
-
-	if f.FmtKindErr == "" {
-		f.FmtKindErr = f.FormName + " must be "
-		if f.Kind == "int" {
-			f.FmtKindErr += "an int"
-		}
-
-		if f.Kind == "string" {
-			f.FmtKindErr += "a string"
-		}
-	}
-
 }

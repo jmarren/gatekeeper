@@ -41,6 +41,7 @@ objects:
         formName: birth month
         validators:
           - name: option
+            error: "birth month must be a valid month"
             value:
               - January
               - February
@@ -54,6 +55,7 @@ objects:
               - October
               - November
               - December
+            
 
   - name: Search
     package: example
