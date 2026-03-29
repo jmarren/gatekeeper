@@ -1,0 +1,110 @@
+package src
+
+import (
+	"slices"
+
+	"github.com/jmarren/gatekeeper/src/templates"
+	"github.com/jmarren/gatekeeper/src/util"
+	"golang.org/x/tools/imports"
+)
+
+type TemplateWriter struct {
+	ValidatorSpec *ValidatorSpec
+	Field         *Field
+	Value         any
+}
+
+type validator struct {
+	converter func(t *TemplateWriter)
+	imports   []string
+}
+
+func ValToInt(t *TemplateWriter) {
+	val, ok := t.Value.(int)
+
+	if !ok {
+		panic("value for " + t.ValidatorSpec.Name + " must be an int")
+	}
+	t.Value = val
+}
+
+func EmptyConverter(t *TemplateWriter) {}
+
+// func AnyToInt(data any, err string) int {
+// 	val, ok := data.(int)
+//
+// 	if !ok {
+// 		panic(err)
+// 	}
+// 	return val
+// }
+
+var validators map[string]validator = map[string]validator{
+	"max": {
+		imports:   []string{},
+		converter: ValToInt,
+	},
+	"min": {
+		imports:   []string{},
+		converter: ValToInt,
+	},
+	"minLen": {
+		imports:   []string{},
+		converter: ValToInt,
+	},
+	"maxLen": {
+		imports:   []string{},
+		converter: ValToInt,
+	},
+	"email": {
+	imports: []string{ MAIL }, 
+}
+}
+
+var intValidators []string = []string{"max", "min", "minLen", "maxLen"}
+
+// var stringValidators []string = []string{"regex"}
+
+var simpleValidators []string = []string{"email"}
+
+var stringSliceValidators []string = []string{"option"}
+
+func NewTemplateWriter(vSpec *ValidatorSpec, field *Field) *TemplateWriter {
+
+	var data any
+
+	if slices.Contains(intValidators, vSpec.Name) {
+		data = util.AnyToInt(vSpec.Value, "value for "+vSpec.Name+" must be an int")
+	} else if slices.Contains(stringSliceValidators, vSpec.Name) {
+		data = util.AnyToStrSlice(vSpec.Value)
+		field.Obj.imports.Add(SLICES)
+	} else if !slices.Contains(simpleValidators, vSpec.Name) {
+		panic("no validator named " + vSpec.Name)
+	}
+
+	switch vSpec.Name {
+	case "email":
+		// import net/mail
+		field.Obj.imports.Add(MAIL)
+	}
+
+	return &TemplateWriter{
+		ValidatorSpec: vSpec,
+		Field:         field,
+		Value:         data,
+	}
+}
+
+func (t *TemplateWriter) errTemplateName() string {
+	return t.ValidatorSpec.Name + "_err"
+}
+
+func (t *TemplateWriter) WriteOuter() {
+	err := templates.Tmpl.ExecuteTemplate(t.Field.Obj.builder, t.errTemplateName(), t)
+	util.PanicIf(err)
+}
+
+func (t *TemplateWriter) WriteValidation() {
+	err := templates.Tmpl.ExecuteTemplate(t.Field.Obj.builder, t.ValidatorSpec.Name, t)
+	util.PanicIf(err)
+}

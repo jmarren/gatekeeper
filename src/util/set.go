@@ -10,8 +10,10 @@ func NewStringSet(vals ...string) StringSet {
 	return s
 }
 
-func (s StringSet) Add(str string) StringSet {
-	s[str] = struct{}{}
+func (s StringSet) Add(strs ...string) StringSet {
+	for _, str := range strs {
+		s[str] = struct{}{}
+	}
 	return s
 }
 
