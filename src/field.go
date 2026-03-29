@@ -18,6 +18,10 @@ func NewField(spec *FieldSpec, obj *Object) *Field {
 		spec.FormName = spec.Name
 	}
 
+	if spec.Kind == "int" {
+		obj.imports.Add(STRCONV)
+	}
+
 	// set default KindErrs
 	if spec.FmtKindErr == "" {
 		if spec.Kind == "int" {

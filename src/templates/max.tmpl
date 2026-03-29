@@ -1,5 +1,12 @@
+
+{{ define "max_err" }}
+var {{ .Field.Name }}MaxErr func(received any) gkerror.ValidationErr = func(received any) gkerror.ValidationErr {
+		return gkerror.NewValidationErr("{{ .Field.FormName }}",  received, {{ .Value }}, "{{ .ValidatorSpec.FmtErr }}" )
+}
+{{ end }}
+
 {{ define "max" }}
-	if x.{{ .Name }} > {{ .Validators.Max }} {
-		errs = append(errs, fmt.Errorf("{{ .FormName }} must be <= {{ .Validators.Max }}"))
+	if x.{{ .Field.Name }} > {{ .Value }} {
+		errGroup.Add({{ .Field.Name}}MaxErr(x.{{ .Field.Name}}))
 	}
 {{ end }}

@@ -27,45 +27,50 @@ objects:
             value: 10
             error: "%(field) must be <= %(expected) characters"
 
-      # - name: Email
-      #   kind: string
-      #   validators:
-      #     - name: email
-      #       error: "Email must a a valid email"
-      #
+      - name: Email
+        kind: string
+        validators:
+          - name: email
+            error: "Email must a a valid email"
+
   #       minLen: 3
   #       maxLen: 10
   #       custom:
   #           - function: NoWhiteSpace
   #
-  #     - name: Age
-  #       formName: age
-  #       kind: int
-  #       min: 18
-  #       max: 100
-  #
-  #
-  #
-  #     - name: BirthMonth
-  #       kind: string
-  #       formName: birth month
-  #       validators:
-  #         - name: option
-  #           error: "birth month must be a valid month"
-  #           value:
-  #             - January
-  #             - February
-  #             - March
-  #             - April
-  #             - May
-  #             - June
-  #             - July
-  #             - August
-  #             - September
-  #             - October
-  #             - November
-  #             - December
-  #
+      - name: Age
+        formName: age
+        kind: int
+        validators:
+          - name: min
+            value: 18
+            error: "Age must be greater than 18"
+          - name: max
+            value: 100
+            error: "Age must be less than 100"
+
+  
+ 
+      - name: BirthMonth
+        kind: string
+        formName: birth month
+        validators:
+          - name: option
+            error: "birth month must be a valid month"
+            value:
+              - January
+              - February
+              - March
+              - April
+              - May
+              - June
+              - July
+              - August
+              - September
+              - October
+              - November
+              - December
+
   #
   # - name: Search
   #   package: example

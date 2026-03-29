@@ -26,3 +26,32 @@ func JoinStrings(strs []string) string {
 
 	return strings.Join(quotedStrs, ", ")
 }
+
+func AnyToStrSlice(data any) []string {
+	vals := []string{}
+
+	iVals, ok := data.([]any)
+	if !ok {
+		panic("option value must be a list")
+	}
+
+	for _, iVal := range iVals {
+		val, ok := iVal.(string)
+		if !ok {
+			panic("option value must be a list of strings")
+		}
+		vals = append(vals, val)
+
+	}
+
+	return vals
+}
+
+func AnyToInt(data any, err string) int {
+	val, ok := data.(int)
+
+	if !ok {
+		panic(err)
+	}
+	return val
+}

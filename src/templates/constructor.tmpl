@@ -1,6 +1,7 @@
 {{ define "constructor" }}
+var err error
+
 func New{{ .Name }}(r *http.Request) (*{{.Name}}, *gkerror.ValidationErrGroup) {
-	var err error
 	errGroup := gkerror.NewValidationErrGroup()
 	x := new({{ .Name }})
 {{ end }}

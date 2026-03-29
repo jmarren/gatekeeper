@@ -55,12 +55,6 @@ func (o *Object) writeErrors() {
 
 func (o *Object) writeFile() {
 
-	// open the file
-	// file := o.outFile()
-
-	// defer closing
-	// defer file.Close()
-
 	path := o.outPath()
 
 	err := os.WriteFile(path, []byte(o.builder.String()), 0777)

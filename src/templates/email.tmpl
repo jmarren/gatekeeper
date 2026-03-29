@@ -1,8 +1,15 @@
 {{ define "email" }}
-	address, err := mail.ParseAddress(x.{{ .FieldName }})
+	address, err := mail.ParseAddress(x.{{ .Field.Name }})
 	if err != nil {
-	    	errGroup.Add({{ .FieldName }}EmailErr(x.{{ .FieldName }}))
+	    	errGroup.Add({{ .Field.Name }}EmailErr(x.{{ .Field.Name }}))
 	} else {
-		x.{{ .FieldName }} = address.Address
+		x.{{ .Field.Name }} = address.Address
     	}
+{{ end }}
+
+
+{{ define "email_err" }}
+var {{ .Field.Name }}EmailErr func(received any) gkerror.ValidationErr = func(received any) gkerror.ValidationErr {
+		return gkerror.NewValidationErr("{{ .Field.FormName }}",  received, "valid email", "{{ .ValidatorSpec.FmtErr}}" )
+}
 {{ end }}
