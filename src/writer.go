@@ -82,7 +82,11 @@ var validators map[string]*validator = map[string]*validator{
 
 func NewTemplateWriter(vSpec *ValidatorSpec, field *Field) *TemplateWriter {
 
-	validator := validators[vSpec.Name]
+	validator, ok := validators[vSpec.Name]
+
+	if !ok {
+		panic("no validator named " + vSpec.Name)
+	}
 
 	t := &TemplateWriter{
 		ValidatorSpec: vSpec,
