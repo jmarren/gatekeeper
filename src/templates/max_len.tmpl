@@ -1,5 +1,12 @@
-{{ define "max_len" }}
-	if len(x.{{ .FieldName}}) > {{ .Value }} {
-		errGroup.Add({{ .FieldName}}MaxLenErr(len(x.{{ .FieldName}})))
+{{ define "maxLen" }}
+	if len(x.{{ .Field.Name}}) > {{ .Value }} {
+		errGroup.Add({{ .Field.Name}}MaxLenErr(len(x.{{ .Field.Name}})))
 	}
+{{ end }}
+
+
+{{ define "maxLen_err" }}
+var {{ .Field.Name }}MaxLenErr func(received any) gkerror.ValidationErr = func(received any) gkerror.ValidationErr {
+		return gkerror.NewValidationErr("{{ .Field.FormName }}",  received, {{ .Value }}, "{{ .ValidatorSpec.FmtErr }}" )
+}
 {{ end }}

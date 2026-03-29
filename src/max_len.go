@@ -1,7 +1,7 @@
 package src
 
 type MaxLen struct {
-	field         *Field
+	Field         *Field
 	ValidatorSpec *ValidatorSpec
 	Value         int
 }
@@ -15,7 +15,7 @@ func NewMaxLen(f *Field, v *ValidatorSpec) *MaxLen {
 	}
 
 	return &MaxLen{
-		field:         f,
+		Field:         f,
 		ValidatorSpec: v,
 		Value:         val,
 	}

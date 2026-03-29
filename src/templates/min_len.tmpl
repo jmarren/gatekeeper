@@ -1,6 +1,13 @@
-{{ define "min_len" }}
-	{{ .FieldName }}Len := len(x.{{.FieldName}})
-	if {{ .FieldName}}Len < {{ .Value }} {
-		errGroup.Add({{ .FieldName}}MinLenErr({{ .FieldName }}Len))
+{{ define "minLen" }}
+	{{ .Field.Name }}Len := len(x.{{.Field.Name}})
+	if {{ .Field.Name}}Len < {{ .Value }} {
+		errGroup.Add({{ .Field.Name}}MinLenErr({{ .Field.Name }}Len))
 	}
+{{ end }}
+
+
+{{ define "minLen_err" }}
+var {{ .Field.Name }}MinLenErr func(received any) gkerror.ValidationErr = func(received any) gkerror.ValidationErr {
+		return gkerror.NewValidationErr("{{ .Field.FormName }}",  received, {{ .Value }}, "{{ .ValidatorSpec.FmtErr}}" )
+}
 {{ end }}

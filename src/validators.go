@@ -1,7 +1,7 @@
 package src
 
 type Validator interface {
-	WriteErr()
+	WriteOuter()
 	WriteValidation()
 }
 
@@ -10,6 +10,11 @@ type ValidatorSpec struct {
 	Value  any
 	FmtErr string `yaml:"error"`
 }
+
+// type validator struct {
+// 	Field         *Field
+// 	ValidatorSpec *ValidatorSpec
+// }
 
 // func (v *ValidatorSpec) addImports(s util.StringSet) {
 // 	switch v.Name {

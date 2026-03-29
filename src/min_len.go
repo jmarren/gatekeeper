@@ -1,17 +1,9 @@
 package src
 
-import (
-	"github.com/jmarren/gatekeeper/src/util"
-)
-
 type MinLen struct {
-	field         *Field
+	Field         *Field
 	ValidatorSpec *ValidatorSpec
-	value         int
-}
-
-func (m *MinLen) imports() util.StringSet {
-	return util.NewStringSet()
+	Value         int
 }
 
 func NewMinLen(f *Field, v *ValidatorSpec) *MinLen {
@@ -23,8 +15,8 @@ func NewMinLen(f *Field, v *ValidatorSpec) *MinLen {
 	}
 
 	return &MinLen{
-		field:         f,
+		Field:         f,
 		ValidatorSpec: v,
-		value:         val,
+		Value:         val,
 	}
 }

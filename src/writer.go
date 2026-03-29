@@ -15,8 +15,6 @@ type TemplateWriter struct {
 
 func NewTemplateWriter(vSpec *ValidatorSpec, field *Field) *TemplateWriter {
 
-	fmt.Println("NewTemplateWriter")
-
 	var data any
 	switch vSpec.Name {
 	case "minLen":
@@ -38,12 +36,12 @@ func (t *TemplateWriter) errTemplateName() string {
 	return t.vSpec.Name + "_err"
 }
 
-func (t *TemplateWriter) WriteErr() {
-	err := templates.Tmpl.ExecuteTemplate(t.field.obj.builder, t.errTemplateName(), t.data)
+func (t *TemplateWriter) WriteOuter() {
+	err := templates.Tmpl.ExecuteTemplate(t.field.Obj.builder, t.errTemplateName(), t.data)
 	util.PanicIf(err)
 }
 
 func (t *TemplateWriter) WriteValidation() {
-	err := templates.Tmpl.ExecuteTemplate(t.field.obj.builder, t.vSpec.Name, t.data)
+	err := templates.Tmpl.ExecuteTemplate(t.field.Obj.builder, t.vSpec.Name, t.data)
 	util.PanicIf(err)
 }

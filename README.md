@@ -15,6 +15,7 @@ Simple validation using code generation. No reflection welcome.
 - Custom object-level validators
 - Fine-grained error handling
 - File watching & caching
+- Generate tests for sample data
 
 ## internals
 - Run generation of all objects in parallel using a workgroup

@@ -1,6 +1,7 @@
 package src
 
 import (
+	"os"
 	"strings"
 
 	"github.com/jmarren/gatekeeper/src/templates"
@@ -10,8 +11,9 @@ import (
 type Object struct {
 	*ObjectSpec
 	builder *strings.Builder
-	fields  []*Field
+	Fields  []*Field
 	imports util.StringSet
+	Imports []string
 }
 
 func NewObject(spec *ObjectSpec) *Object {
@@ -22,7 +24,7 @@ func NewObject(spec *ObjectSpec) *Object {
 		ObjectSpec: spec,
 		builder:    builder,
 		imports:    util.NewStringSet(),
-		fields:     []*Field{},
+		Fields:     []*Field{},
 	}
 
 	// add default imports
@@ -31,34 +33,37 @@ func NewObject(spec *ObjectSpec) *Object {
 
 	for _, fs := range spec.FieldSpecs {
 		field := NewField(fs, o)
-		o.fields = append(o.fields, field)
+		o.Fields = append(o.Fields, field)
 	}
+
+	o.Imports = o.imports.ToSlice()
 
 	return o
 }
 
 func (o *Object) writeFields() {
-	for _, f := range o.fields {
+	for _, f := range o.Fields {
 		f.WriteValidation()
 	}
 }
 
 func (o *Object) writeErrors() {
-	for _, f := range o.fields {
-		f.WriteErrors()
+	for _, f := range o.Fields {
+		f.WriteOuter()
 	}
 }
 
 func (o *Object) writeFile() {
 
 	// open the file
-	file := o.outFile()
+	// file := o.outFile()
 
 	// defer closing
-	defer file.Close()
+	// defer file.Close()
 
-	// write the string builders string to the file
-	_, err := file.WriteString(o.builder.String())
+	path := o.outPath()
+
+	err := os.WriteFile(path, []byte(o.builder.String()), 0777)
 
 	util.PanicIf(err)
 

@@ -6,8 +6,8 @@ import (
 )
 
 type Field struct {
-	obj *Object
 	*FieldSpec
+	Obj        *Object
 	Validators []Validator
 }
 
@@ -29,7 +29,7 @@ func NewField(spec *FieldSpec, obj *Object) *Field {
 	}
 
 	f := &Field{
-		obj:        obj,
+		Obj:        obj,
 		FieldSpec:  spec,
 		Validators: []Validator{},
 	}
@@ -42,6 +42,10 @@ func NewField(spec *FieldSpec, obj *Object) *Field {
 }
 
 func (f *Field) WriteValidation() {
+	var err error
+	_, err = f.Obj.builder.WriteString("\n	// " + f.Name + " validation")
+	util.PanicIf(err)
+
 	f.WriteAssignment()
 
 	for _, v := range f.Validators {
@@ -53,9 +57,9 @@ func (f *Field) WriteAssignment() {
 	var err error
 	switch f.Kind {
 	case "int":
-		err = templates.Tmpl.ExecuteTemplate(f.obj.builder, "int", f)
+		err = templates.Tmpl.ExecuteTemplate(f.Obj.builder, "int", f)
 	case "string":
-		err = templates.Tmpl.ExecuteTemplate(f.obj.builder, "string", f)
+		err = templates.Tmpl.ExecuteTemplate(f.Obj.builder, "string", f)
 	default:
 		panic("kind must be string or int")
 	}
@@ -63,10 +67,15 @@ func (f *Field) WriteAssignment() {
 	util.PanicIf(err)
 }
 
-func (f *Field) WriteErrors() {
-	err := templates.Tmpl.ExecuteTemplate(f.obj.builder, "kind_err", f)
+func (f *Field) WriteOuter() {
+	var err error
+
+	_, err = f.Obj.builder.WriteString("// " + f.Name + " errors")
+	util.PanicIf(err)
+
+	err = templates.Tmpl.ExecuteTemplate(f.Obj.builder, "kind_err", f)
 	util.PanicIf(err)
 	for _, v := range f.Validators {
-		v.WriteErr()
+		v.WriteOuter()
 	}
 }
