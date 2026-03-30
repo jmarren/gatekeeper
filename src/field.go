@@ -24,9 +24,11 @@ func NewField(spec *FieldSpec, obj *Object) *Field {
 	// import strconv if the kind is an int
 	if spec.Kind == "int" {
 		obj.Import(STRCONV)
+		obj.UseErrVar()
 	}
 	if spec.Kind == "uuid.UUID" {
 		obj.Import(UUID)
+		obj.UseErrVar()
 	}
 
 	// set default KindErrs
@@ -49,6 +51,7 @@ func NewField(spec *FieldSpec, obj *Object) *Field {
 		spec.Kind = "time.Time"
 		kindData = kd
 		obj.Import(TIME)
+		obj.UseErrVar()
 	}
 
 	if strings.HasPrefix(spec.Kind, "libphonenumber.PhoneNumber") {
@@ -58,6 +61,7 @@ func NewField(spec *FieldSpec, obj *Object) *Field {
 		}
 		spec.Kind = "*libphonenumber.PhoneNumber"
 		kindData = kd
+		obj.UseErrVar()
 		obj.Import(PHONE_NUMBER)
 	}
 

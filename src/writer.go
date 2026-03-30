@@ -63,6 +63,13 @@ func SimpleConverter(t *TemplateWriter) {
 	t.Value = val
 }
 
+func (v *validator) UseErrVar() *validator {
+	v.Use(func(t *TemplateWriter) {
+		t.Field.Obj.UseErrVar()
+	})
+	return v
+}
+
 func (v *validator) Import(i ...string) *validator {
 	v.imports = append(v.imports, i...)
 	return v
@@ -84,9 +91,9 @@ var validators map[string]*validator = map[string]*validator{
 	"min":    simpleIntValidator,
 	"maxLen": simpleIntValidator,
 	"minLen": simpleIntValidator,
-	"email":  NewValidator().Import(MAIL),
-	"option": NewValidator().Use(ValToStringArr).Import(STRCONV, SLICES),
-	"regex":  NewValidator().Use(SimpleConverter).Import(REGEX),
+	"email":  NewValidator().Import(MAIL).UseErrVar(),
+	"option": NewValidator().Use(ValToStringArr).Import(STRCONV, SLICES).UseErrVar(),
+	"regex":  NewValidator().Use(SimpleConverter).Import(REGEX).UseErrVar(),
 }
 
 func NewTemplateWriter(vSpec *ValidatorSpec, field *Field) *TemplateWriter {

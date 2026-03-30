@@ -10,10 +10,15 @@ import (
 
 type Object struct {
 	*ObjectSpec
-	builder *strings.Builder
-	Fields  []*Field
-	imports util.StringSet
-	Imports []string
+	builder       *strings.Builder
+	Fields        []*Field
+	imports       util.StringSet
+	Imports       []string
+	DeclareErrVar bool
+}
+
+func (o *Object) UseErrVar() {
+	o.DeclareErrVar = true
 }
 
 func (o *Object) Import(imports ...string) {

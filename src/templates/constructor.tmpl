@@ -2,5 +2,6 @@
 
 func New{{ .Name }}(r *http.Request) (*{{.Name}}, *gkerror.ValidationErrGroup) {
 	errGroup := gkerror.NewValidationErrGroup()
+	{{ if  .DeclareErrVar }}var err error  {{ end }}
 	x := new({{ .Name }})
 {{ end }}
