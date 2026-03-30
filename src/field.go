@@ -22,6 +22,9 @@ func NewField(spec *FieldSpec, obj *Object) *Field {
 	if spec.Kind == "int" {
 		obj.Import(STRCONV)
 	}
+	if spec.Kind == "uuid.UUID" {
+		obj.Import(UUID)
+	}
 
 	// set default KindErrs
 	if spec.FmtKindErr == "" {
@@ -71,6 +74,8 @@ func (f *Field) WriteAssignment() {
 		f.execTemplate("int")
 	case "string":
 		f.execTemplate("string")
+	case "uuid.UUID":
+		f.execTemplate("uuid")
 	default:
 		panic("kind must be string or int")
 	}

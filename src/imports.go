@@ -9,4 +9,5 @@ const (
 	STRING         = "\"strconv\""
 	SLICES         = "\"slices\""
 	FMT            = "\"fmt\""
+	UUID           = "\"github.com/google/uuid\""
 )

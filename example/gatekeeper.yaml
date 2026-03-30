@@ -36,6 +36,10 @@ objects:
           - name: email
             error: "Email must a a valid email"
 
+      - name: UserId
+        kind: uuid.UUID
+        kindErr: "UserId must be a valid UUID"
+
 
   #       minLen: 3
   #       maxLen: 10

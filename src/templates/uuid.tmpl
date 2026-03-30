@@ -1,0 +1,10 @@
+{{ define "uuid" }}
+	x.{{ .Name}}, err = uuid.Parse(r.FormValue("{{ .Name }}"))
+	if err != nil {
+		errGroup.Add({{ .Name }}KindErr)
+	}
+{{ end }}
+
+{{ define "uuid_err" }}
+
+{{ end }}
