@@ -11,9 +11,12 @@ func TestUser(t *testing.T) {
 
 	form := url.Values{}
 	form.Add("Email", "test@example.com")
-	form.Add("FirstName", "wxyz")
+	form.Add("FirstName", "peach")
+	form.Add("LastName", "wxyz")
 	form.Add("Age", "22")
 	form.Add("BirthMonth", "January")
+	form.Add("Id", "03eefd05-c2e3-4917-a1bf-6f112e78295a")
+	form.Add("CreatedAt", "2006-02-02")
 
 	// 2. Encode the form data into a bytes.Buffer
 	// The body of an http.Request needs to be an io.Reader
@@ -31,6 +34,11 @@ func TestUser(t *testing.T) {
 	user, errs := NewUser(req)
 
 	t.Logf("user = %v\n", user)
-	t.Logf("errs = %v\n", errs.String())
+
+	if errs.Any() {
+		t.Logf("errs = %v\n", errs.String())
+	} else {
+		t.Log("No Errors")
+	}
 
 }

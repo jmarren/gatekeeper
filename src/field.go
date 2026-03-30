@@ -1,6 +1,8 @@
 package src
 
 import (
+	"strings"
+
 	"github.com/jmarren/gatekeeper/src/templates"
 	"github.com/jmarren/gatekeeper/src/util"
 )
@@ -9,6 +11,7 @@ type Field struct {
 	*FieldSpec
 	Obj        *Object
 	Validators []Validator
+	KindData   any
 }
 
 func NewField(spec *FieldSpec, obj *Object) *Field {
@@ -36,10 +39,23 @@ func NewField(spec *FieldSpec, obj *Object) *Field {
 		}
 	}
 
+	var kindData any
+
+	if strings.HasPrefix(spec.Kind, "time.Time") {
+		kd, found := strings.CutPrefix(spec.Kind, "time.Time/")
+		if !found {
+			panic("time.Time kind must specify a layout i.e. time.Time/time.DateOnly")
+		}
+		spec.Kind = "time.Time"
+		kindData = kd
+		obj.Import(TIME)
+	}
+
 	f := &Field{
 		Obj:        obj,
 		FieldSpec:  spec,
 		Validators: []Validator{},
+		KindData:   kindData,
 	}
 
 	for _, v := range spec.ValidationSpecs {
@@ -69,6 +85,7 @@ func (f *Field) execTemplate(name string) {
 }
 
 func (f *Field) WriteAssignment() {
+
 	switch f.Kind {
 	case "int":
 		f.execTemplate("int")
@@ -76,6 +93,9 @@ func (f *Field) WriteAssignment() {
 		f.execTemplate("string")
 	case "uuid.UUID":
 		f.execTemplate("uuid")
+	case "time.Time":
+		f.execTemplate("time")
+
 	default:
 		panic("kind must be string or int")
 	}

@@ -36,16 +36,14 @@ objects:
           - name: email
             error: "Email must a a valid email"
 
-      - name: UserId
+      - name: Id
         kind: uuid.UUID
         kindErr: "UserId must be a valid UUID"
 
+      - name: CreatedAt
+        kind: time.Time/time.DateOnly
+        kindErr: "CreatedAt must be a valid time"
 
-  #       minLen: 3
-  #       maxLen: 10
-  #       custom:
-  #           - function: NoWhiteSpace
-  #
       - name: Age
         formName: age
         kind: int

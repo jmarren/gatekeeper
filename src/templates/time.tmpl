@@ -1,0 +1,7 @@
+{{ define "time" }}
+	x.{{ .Name}}, err = time.Parse({{ .KindData }}, r.FormValue("{{ .Name }}"))
+
+	if err != nil {
+		errGroup.Add({{ .Name }}KindErr)
+	}
+{{ end }}

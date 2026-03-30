@@ -31,7 +31,14 @@ func (v *ValidationErrGroup) String() string {
 }
 
 func NewValidationErrGroup() *ValidationErrGroup {
-	return new(ValidationErrGroup)
+	return &ValidationErrGroup{
+		errs:   []ValidationErr{},
+		errStr: new(strings.Builder),
+	}
+}
+
+func (v *ValidationErrGroup) Any() bool {
+	return len(v.errs) > 0
 }
 
 func (v *ValidationErrGroup) Errors() []string {
