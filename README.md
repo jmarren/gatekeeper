@@ -5,7 +5,7 @@ Gatekeeper generates code that validates http request form values.
 
 Validated values are assigned to corresponding struct fields without the use of reflection.
 
-To generate a .gatekeeper.go file, run gatekeeper on a .yaml configuration file.
+To generate a .gatekeeper.go file, run gatekeeper on a .yaml configuration file. You may need to run go mod tidy after generation in order to resolve dependencies such as libphonenumber if they are not already included in your project.
 
 see example/gatekeeper.yaml for an example configuration file
 
@@ -71,9 +71,11 @@ see example/gatekeeper.yaml for an example configuration file
 - Parsing from request body as JSON
 - Panic on Error option w/ recover handler
 - Validation escape on first failure
+- Support for externally defined types
 
 
 ## internals
 - Run generation of all objects in parallel using a workgroup
+- Better validation/error messages for configuration files
 
 
