@@ -41,7 +41,7 @@ objects:
         kindErr: "UserId must be a valid UUID"
 
       - name: CreatedAt
-        kind: time.Time/time.DateOnly
+        kind: time.Time/time.DateTime
         kindErr: "CreatedAt must be a valid time"
 
       - name: Age

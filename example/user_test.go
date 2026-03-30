@@ -16,7 +16,7 @@ func TestUser(t *testing.T) {
 	form.Add("Age", "22")
 	form.Add("BirthMonth", "January")
 	form.Add("Id", "03eefd05-c2e3-4917-a1bf-6f112e78295a")
-	form.Add("CreatedAt", "2006-02-02")
+	form.Add("CreatedAt", "2006-01-02 15:04:05")
 
 	// 2. Encode the form data into a bytes.Buffer
 	// The body of an http.Request needs to be an io.Reader
