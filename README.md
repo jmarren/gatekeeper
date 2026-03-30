@@ -9,22 +9,22 @@ see example/gatekeeper.yaml for an example configuration file
 
 # features
 - Validation for 
-    - ints
+    - Ints
         - min and max
-    - strings
+    - Strings
         - min length and max length
-    - emails
-    - options (must be one of { "January", "February", etc }
+    - Emails
+    - Options (must be one of { "January", "February", etc }
     - time.Time
         - specify time format (DateOnly, DateTime, etc)
     - UUIDS
     - Regex Matching
-
-    
+    - Phone Numbers
+        - provided as *libphonenumber.PhoneNumber validated against a region
+        
 
 # roadmap
 ## features
-- Phone Numbers
 - File types
 - Additional primitives and other custom types (int64, uuid.UUID, etc)
 - Middleware provider
