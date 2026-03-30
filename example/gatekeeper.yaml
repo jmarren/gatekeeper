@@ -44,6 +44,11 @@ objects:
         kind: time.Time/time.DateTime
         kindErr: "CreatedAt must be a valid time"
 
+      - name: PhoneNumber
+        kind: libphonenumber.PhoneNumber/US
+        kindErr: "PhoneNumber must be a valid phone number"
+    
+
       - name: Age
         formName: age
         kind: int

@@ -1,0 +1,11 @@
+{{ define "*libphonenumber.PhoneNumber" }}
+	x.{{ .Name }}, err = libphonenumber.Parse(r.FormValue("{{ .Name }}"), "{{ .KindData }}")
+	
+	if err != nil {
+		errGroup.Add({{ .Name }}KindErr)
+	}
+
+	if !libphonenumber.IsValidNumber(x.{{ .Name }}) {
+		errGroup.Add({{ .Name }}KindErr)
+	}
+{{ end }}

@@ -11,4 +11,5 @@ const (
 	FMT            = "\"fmt\""
 	UUID           = "\"github.com/google/uuid\""
 	TIME           = "\"time\""
+	PHONE_NUMBER   = "\"github.com/ttacon/libphonenumber\""
 )

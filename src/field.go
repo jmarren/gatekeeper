@@ -51,6 +51,16 @@ func NewField(spec *FieldSpec, obj *Object) *Field {
 		obj.Import(TIME)
 	}
 
+	if strings.HasPrefix(spec.Kind, "libphonenumber.PhoneNumber") {
+		kd, found := strings.CutPrefix(spec.Kind, "libphonenumber.PhoneNumber/")
+		if !found {
+			panic("libphonenumber.PhoneNumber kind must specify a default region i.e. *libphonenumber.PhoneNumber/US")
+		}
+		spec.Kind = "*libphonenumber.PhoneNumber"
+		kindData = kd
+		obj.Import(PHONE_NUMBER)
+	}
+
 	f := &Field{
 		Obj:        obj,
 		FieldSpec:  spec,
@@ -95,6 +105,8 @@ func (f *Field) WriteAssignment() {
 		f.execTemplate("uuid")
 	case "time.Time":
 		f.execTemplate("time")
+	case "*libphonenumber.PhoneNumber":
+		f.execTemplate("*libphonenumber.PhoneNumber")
 
 	default:
 		panic("kind must be string or int")
