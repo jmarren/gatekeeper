@@ -21,7 +21,24 @@ see example/gatekeeper.yaml for an example configuration file
     - Regex Matching
     - Phone Numbers
         - provided as *libphonenumber.PhoneNumber validated against a region
-        
+   
+- Handler Decorator
+    Functionality is provided to convert a handler that takes in the request, responseWriter,  a pointer to the validated struct, and a *gkerror.ValidationErrGroup to an http.HandlerFunc by decorating.
+    All you need to do is create a function like:
+    ```go
+        func UserHandler(w http.ResponseWriter, r *http.Request, User *User, errs *gkerror.ValidationErrGroup) {
+            // do something with the struct and errors        
+            if errs.Any() {
+                // an error occurred
+                firstNameErrs := errs.ByField("FirstName") 
+                // do something with errors on the FirstName field
+            }
+        }
+    ```
+    then you can pass it to the generated function decorator to get an http.HandlerFunc:
+    ```go
+        handler := NewUserHandler(UserHandler) // this returns an http.HandlerFunc that can be assigned to a route
+    ```
 
 # roadmap
 ## features
