@@ -75,14 +75,20 @@ func (o *Object) execTemplate(name string) {
 func (o *Object) writeInterface() {
 	// path := o.EmitInterfacePath.Path
 
-	builder := new(strings.Builder)
+	for _, iPath := range o.EmitInterfacePaths {
+		iWriter := NewInterfaceWriter(iPath, *o)
+		iWriter.Write()
+	}
 
-	err := templates.Tmpl.ExecuteTemplate(builder, "interface", o)
-	util.PanicIf(err)
-
-	err = os.WriteFile(o.EmitInterfacePath.Path+"/"+o.Name+".gatekeeper.interface.go", []byte(builder.String()), 0777)
-
-	util.PanicIf(err)
+	// for _, dest := range o.EmitInterfacePaths {
+	// 	builder := new(strings.Builder)
+	//
+	// 	err := templates.Tmpl.ExecuteTemplate(builder, "interface", o)
+	// 	util.PanicIf(err)
+	// 	err = os.WriteFile(dest.Path+"/"+o.Name+".gatekeeper.interface.go", []byte(builder.String()), 0777)
+	// }
+	//
+	// util.PanicIf(err)
 
 }
 

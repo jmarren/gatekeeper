@@ -7,7 +7,5 @@
 
 
 {{ define "minLen_err" }}
-var {{ .Field.Name }}MinLenErr func(received any) gkerror.ValidationErr = func(received any) gkerror.ValidationErr {
-		return gkerror.NewValidationErr("{{ .Field.FormName }}",  received, {{ .Value }}, "{{ .ValidatorSpec.FmtErr}}" )
-}
+var {{ .Field.Name }}MinLenErr gkerror.ValidationErrReciever = gkerror.NewErrReceiver("{{ .Field.FormName }}",  {{ .Value }}, "{{ .ValidatorSpec.FmtErr}}" )
 {{ end }}

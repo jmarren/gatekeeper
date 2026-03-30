@@ -1,5 +1,5 @@
 {{ define "interface" }}
-package {{ .EmitInterfacePath.Package }}
+package {{ .InterfacePath.Package }}
 type I{{ .Name }} interface {
 {{ range .Fields }} Get{{ .Name }}() {{ .Kind }}
 {{ end }}

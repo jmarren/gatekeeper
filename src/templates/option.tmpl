@@ -5,9 +5,8 @@ var {{ .Field.Name }}Options []string = []string{ {{ joinStrs .Value }} }
 {{ define "option_err" }}
 var {{ .Field.Name }}Options []string = []string{ {{ joinStrs .Value }} }
 
-var {{ .Field.Name }}OptionErr func(received any) gkerror.ValidationErr = func(received any) gkerror.ValidationErr {
-	return gkerror.NewValidationErr("{{ .Field.FormName }}",  received, {{ .Field.Name }}Options, "{{ .ValidatorSpec.FmtErr}}" )
-}
+var {{ .Field.Name }}OptionErr gkerror.ValidationErrReciever = gkerror.NewErrReceiver("{{ .Field.FormName }}",  {{ .Field.Name}}Options, "{{ .ValidatorSpec.FmtErr}}" )
+
 {{ end }}
 
 {{ define "option" }}

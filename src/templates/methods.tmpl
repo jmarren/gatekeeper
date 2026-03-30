@@ -13,6 +13,7 @@
 
 {{ define "methods" }}
 {{ $ObjectName := .Name }}
+// define getter methods to satisfy interface
 {{ range .Fields }}
 func (x *{{ $ObjectName }}) Get{{ .Name }}() {{ .Kind }} {
 	return x.{{ .Name }}

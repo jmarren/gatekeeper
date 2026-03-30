@@ -42,6 +42,72 @@ see example/gatekeeper.yaml for an example configuration file
         handler := NewUserHandler(UserHandler) // this returns an http.HandlerFunc that can be assigned to a route
     ```
 
+- Interfaces
+    The generated struct is attached getter methods for each of its fields in the form of Get<FieldName>() <Kind>, like so:
+    ```go
+    func (x *User) GetFirstName() string {
+        return x.FirstName
+    }
+
+    func (x *User) GetLastName() string {
+        return x.LastName
+    }
+
+    func (x *User) GetEmail() string {
+        return x.Email
+    }
+
+    func (x *User) GetId() uuid.UUID {
+        return x.Id
+    }
+
+    func (x *User) GetCreatedAt() time.Time {
+        return x.CreatedAt
+    }
+
+    func (x *User) GetPhoneNumber() *libphonenumber.PhoneNumber {
+        return x.PhoneNumber
+    }
+
+    func (x *User) GetAge() int {
+        return x.Age
+    }
+
+    func (x *User) GetBirthMonth() string {
+        return x.BirthMonth
+    }
+
+    ```
+
+    This allows for interfaces to be emitter to other packages using the emit_interface_to property of the object configuration.
+    
+    For example we can specify that we'd like the interface to be emitted to package other located at ./other:
+
+    ```go
+    package other
+
+    import (
+        "time"
+
+        "github.com/google/uuid"
+        "github.com/ttacon/libphonenumber"
+    )
+
+    type IUser interface {
+        GetFirstName() string
+        GetLastName() string
+        GetEmail() string
+        GetId() uuid.UUID
+        GetCreatedAt() time.Time
+        GetPhoneNumber() *libphonenumber.PhoneNumber
+        GetAge() int
+        GetBirthMonth() string
+    }
+
+    ```
+       
+
+
 # roadmap
 ## features to implement going forward
 - File types

@@ -4,17 +4,12 @@ import (
 	"strings"
 )
 
-type InterfacePath struct {
-	Path    string
-	Package string
-}
-
 type ObjectSpec struct {
-	Name              string        `yaml:"name"`
-	Package           string        `yaml:"package"`
-	FieldSpecs        []*FieldSpec  `yaml:"fields"`
-	Path              string        `yaml:"path"`
-	EmitInterfacePath InterfacePath `yaml:"emit_interface_to"`
+	Name               string          `yaml:"name"`
+	Package            string          `yaml:"package"`
+	FieldSpecs         []*FieldSpec    `yaml:"fields"`
+	Path               string          `yaml:"path"`
+	EmitInterfacePaths []InterfacePath `yaml:"emit_interface_to"`
 }
 
 // generate the outPath for this object

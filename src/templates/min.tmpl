@@ -1,7 +1,5 @@
 {{ define "min_err" }}
-var {{ .Field.Name }}MinErr func(received any) gkerror.ValidationErr = func(received any) gkerror.ValidationErr {
-		return gkerror.NewValidationErr("{{ .Field.FormName }}",  received, {{ .Value }}, "{{ .ValidatorSpec.FmtErr }}" )
-}
+var {{ .Field.Name }}MinErr gkerror.ValidationErrReciever = gkerror.NewErrReceiver("{{ .Field.FormName }}",  {{ .Value }}, "{{ .ValidatorSpec.FmtErr}}" )
 {{ end }}
 
 

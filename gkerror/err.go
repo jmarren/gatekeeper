@@ -92,3 +92,11 @@ func (v *validationErr) Field() string {
 func (v *validationErr) Expected() any {
 	return v.expected
 }
+
+type ValidationErrReciever func(received any) ValidationErr
+
+func NewErrReceiver(field string, expected any, formatString string) ValidationErrReciever {
+	return func(received any) ValidationErr {
+		return NewValidationErr(field, received, expected, formatString)
+	}
+}

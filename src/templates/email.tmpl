@@ -9,7 +9,5 @@
 
 
 {{ define "email_err" }}
-var {{ .Field.Name }}EmailErr func(received any) gkerror.ValidationErr = func(received any) gkerror.ValidationErr {
-		return gkerror.NewValidationErr("{{ .Field.FormName }}",  received, "valid email", "{{ .ValidatorSpec.FmtErr}}" )
-}
+var {{ .Field.Name }}EmailErr gkerror.ValidationErrReciever = gkerror.NewErrReceiver("{{ .Field.FormName }}",  "valid email", "{{ .ValidatorSpec.FmtErr}}" )
 {{ end }}

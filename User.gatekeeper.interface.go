@@ -1,5 +1,5 @@
 
-package other
+package src
 type IUser interface {
  GetFirstName() string
  GetLastName() string

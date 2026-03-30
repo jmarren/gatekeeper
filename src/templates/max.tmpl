@@ -1,8 +1,6 @@
 
 {{ define "max_err" }}
-var {{ .Field.Name }}MaxErr func(received any) gkerror.ValidationErr = func(received any) gkerror.ValidationErr {
-		return gkerror.NewValidationErr("{{ .Field.FormName }}",  received, {{ .Value }}, "{{ .ValidatorSpec.FmtErr }}" )
-}
+var {{ .Field.Name }}MaxErr gkerror.ValidationErrReciever = gkerror.NewErrReceiver("{{ .Field.FormName }}",  {{ .Value }}, "{{ .ValidatorSpec.FmtErr}}" )
 {{ end }}
 
 {{ define "max" }}
