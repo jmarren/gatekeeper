@@ -1,0 +1,21 @@
+<!-- type Object struct { -->
+<!-- 	*ObjectSpec -->
+<!-- 	builder *strings.Builder -->
+<!-- 	fields  []*Field -->
+<!-- 	Imports util.StringSet -->
+<!-- } -->
+<!-- type ObjectSpec struct { -->
+<!-- 	Name       string       `yaml:"name"` -->
+<!-- 	Package    string       `yaml:"package"` -->
+<!-- 	FieldSpecs []*FieldSpec `yaml:"fields"` -->
+<!-- 	Path       string       `yaml:"path"` -->
+<!-- } -->
+
+{{ define "methods" }}
+{{ $ObjectName := .Name }}
+{{ range .Fields }}
+func (x *{{ $ObjectName }}) Get{{ .Name }}() {{ .Kind }} {
+	return x.{{ .Name }}
+}
+{{ end }}
+{{ end }}

@@ -3,6 +3,9 @@ objects:
   - name: User
     package: example
     path: ./example/
+    emit_interface_to:
+      package: other
+      path: other
     fields:
       - name: FirstName
         kind: string
@@ -48,6 +51,7 @@ objects:
         kind: libphonenumber.PhoneNumber/US
         kindErr: "PhoneNumber must be a valid phone number"
     
+
 
       - name: Age
         formName: age

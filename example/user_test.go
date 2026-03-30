@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"net/url"
 	"testing"
+
+	"github.com/jmarren/gatekeeper/other"
 )
 
 func TestUser(t *testing.T) {
@@ -41,5 +43,7 @@ func TestUser(t *testing.T) {
 	} else {
 		t.Log("No Errors")
 	}
+
+	other.HandleUser(user)
 
 }

@@ -72,6 +72,13 @@ see example/gatekeeper.yaml for an example configuration file
 - Panic on Error option w/ recover handler
 - Validation escape on first failure
 - Support for externally defined types
+- Comparison against other fields (i.e. .NumberOne must be greater than .NumberTwo)
+- Colors (rgba, hex)
+- Valid JSON string
+    - marshal into provided type
+- Social Security Numbers
+- Emit interface to another directory/package
+
 
 
 ## internals

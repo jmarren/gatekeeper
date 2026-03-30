@@ -72,6 +72,20 @@ func (o *Object) execTemplate(name string) {
 	util.PanicIf(err)
 }
 
+func (o *Object) writeInterface() {
+	// path := o.EmitInterfacePath.Path
+
+	builder := new(strings.Builder)
+
+	err := templates.Tmpl.ExecuteTemplate(builder, "interface", o)
+	util.PanicIf(err)
+
+	err = os.WriteFile(o.EmitInterfacePath.Path+"/"+o.Name+".gatekeeper.interface.go", []byte(builder.String()), 0777)
+
+	util.PanicIf(err)
+
+}
+
 func (o *Object) Write() {
 	var err error
 
@@ -83,6 +97,8 @@ func (o *Object) Write() {
 
 	// write type definition
 	o.execTemplate("typedef")
+
+	o.execTemplate("methods")
 
 	// write open constructor
 	o.execTemplate("constructor")
@@ -99,5 +115,7 @@ func (o *Object) Write() {
 
 	// write the builder to file
 	o.writeFile()
+
+	o.writeInterface()
 
 }
