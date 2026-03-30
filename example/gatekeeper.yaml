@@ -6,32 +6,36 @@ objects:
     fields:
       - name: FirstName
         kind: string
-        kindErr: "%(field) must be a string"
+        kindErr: "FirstName must be a string"
         validators:
           - name: minLen
             value: 3
-            error: "%(field) must be >= %(expected) characters"
+            error: "FirstName must be >= 3 characters"
           - name: maxLen
             value: 10
-            error: "%(field) must be <= %(expected) characters"
+            error: "FirstName must be <= 10 characters"
+          - name: regex
+            value: p([a-z]+)ch
+            error: "FirstName must match regex p([a-z]+)ch"
 
       - name: LastName
         kind: string
         formName: "last name"
-        kindErr: "%(field) must be a string"
+        kindErr: "last name must be a string"
         validators:
           - name: minLen
             value: 3
-            error: "%(field) must be >= %(expected) characters"
+            error: "last name must be >= 3 characters. Got %v"
           - name: maxLen
             value: 10
-            error: "%(field) must be <= %(expected) characters"
+            error: "last name must be <= 10 characters"
 
       - name: Email
         kind: string
         validators:
           - name: email
             error: "Email must a a valid email"
+
 
   #       minLen: 3
   #       maxLen: 10

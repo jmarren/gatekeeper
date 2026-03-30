@@ -2,7 +2,6 @@ package gkerror
 
 import (
 	"fmt"
-	"slices"
 	"strings"
 )
 
@@ -13,7 +12,8 @@ type ValidationErr interface {
 }
 
 type ValidationErrGroup struct {
-	errs []ValidationErr
+	errs   []ValidationErr
+	errStr *strings.Builder
 }
 
 func (v *ValidationErrGroup) Print() {
@@ -23,12 +23,11 @@ func (v *ValidationErrGroup) Print() {
 }
 
 func (v *ValidationErrGroup) String() string {
-	out := ""
+	out := new(strings.Builder)
 	for _, err := range v.errs {
-		out += "\n"
-		out += err.Error()
+		out.WriteString("\n" + err.Error())
 	}
-	return out
+	return out.String()
 }
 
 func NewValidationErrGroup() *ValidationErrGroup {
@@ -45,6 +44,7 @@ func (v *ValidationErrGroup) Errors() []string {
 
 func (v *ValidationErrGroup) Add(vErr ValidationErr) {
 	v.errs = append(v.errs, vErr)
+	v.errStr.WriteString("\n" + vErr.Error())
 }
 
 func (v *ValidationErrGroup) ByField(field string) *ValidationErrGroup {
@@ -57,81 +57,25 @@ func (v *ValidationErrGroup) ByField(field string) *ValidationErrGroup {
 	return out
 }
 
-// func hi() {
-// 	minLenErr := func(received int) ValidationErr {
-// 		return NewValidationErr("FirstName", received, 3, "must be >= %(value)")
-// 	}
-//
-// }
-
 type validationErr struct {
-	field        string
-	received     any
-	expected     any
-	formatString string
-	fmtParams    []any
+	field    string
+	received any
+	expected any
+	error    string
 }
 
 func NewValidationErr(field string, received any, expected any, formatString string) ValidationErr {
-
-	valueIndex := strings.Index(formatString, "%(received)")
-	expectedIndex := strings.Index(formatString, "%(expected)")
-	fieldIndex := strings.Index(formatString, "%(field)")
-
-	fmtParams := []any{}
-
-	indexes := make(map[int]string)
-
-	for valueIndex != -1 {
-		indexes[valueIndex] = "received"
-		valueIndex = strings.Index(formatString[valueIndex+1:], "%(received)")
-	}
-
-	for expectedIndex != -1 {
-		indexes[expectedIndex] = "expected"
-		expectedIndex = strings.Index(formatString[expectedIndex+1:], "%(expected)")
-	}
-
-	for fieldIndex != -1 {
-		indexes[fieldIndex] = "field"
-		fieldIndex = strings.Index(formatString[fieldIndex+1:], "%(field)")
-	}
-
-	keys := []int{}
-
-	for key := range indexes {
-		keys = append(keys, key)
-	}
-
-	slices.Sort(keys)
-
-	for _, key := range keys {
-		switch indexes[key] {
-		case "received":
-			fmtParams = append(fmtParams, received)
-		case "expected":
-			fmtParams = append(fmtParams, expected)
-		case "field":
-			fmtParams = append(fmtParams, field)
-		}
-	}
-
-	formatString = strings.ReplaceAll(formatString, "%(received)", "%v")
-	formatString = strings.ReplaceAll(formatString, "%(expected)", "%v")
-	formatString = strings.ReplaceAll(formatString, "%(field)", "%s")
-
+	error := strings.ReplaceAll(formatString, "%v", fmt.Sprintf("%v", received))
 	return &validationErr{
 		field,
 		received,
 		expected,
-		formatString,
-		fmtParams,
+		error,
 	}
 }
 
 func (v *validationErr) Error() string {
-	fmt.Println(v.formatString)
-	return fmt.Sprintf(v.formatString, v.fmtParams...)
+	return v.error
 }
 
 func (v *validationErr) Field() string {

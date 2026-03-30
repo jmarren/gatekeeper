@@ -55,6 +55,14 @@ func NewValidator() *validator {
 	}
 }
 
+func SimpleConverter(t *TemplateWriter) {
+	val, ok := t.ValidatorSpec.Value.(string)
+	if !ok {
+		panic("value for " + t.ValidatorSpec.Name + " must be a string")
+	}
+	t.Value = val
+}
+
 func (v *validator) Import(i ...string) *validator {
 	v.imports = append(v.imports, i...)
 	return v
@@ -77,13 +85,16 @@ var validators map[string]*validator = map[string]*validator{
 	"maxLen": simpleIntValidator,
 	"minLen": simpleIntValidator,
 	"email":  NewValidator().Import(MAIL),
-	"option": NewValidator().Use(ValToStringArr).Import(STRCONV),
+	"option": NewValidator().Use(ValToStringArr).Import(STRCONV, SLICES),
+	"regex":  NewValidator().Use(SimpleConverter).Import(REGEX),
 }
 
 func NewTemplateWriter(vSpec *ValidatorSpec, field *Field) *TemplateWriter {
 
+	// get the validator from the lookup table
 	validator, ok := validators[vSpec.Name]
 
+	// panic if not found
 	if !ok {
 		panic("no validator named " + vSpec.Name)
 	}

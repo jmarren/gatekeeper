@@ -1,0 +1,13 @@
+{{ define "regex" }}
+	if !{{ .Field.Name }}Regex.MatchString(x.{{ .Field.Name }}) {
+		errGroup.Add({{ .Field.Name }}RegexErr(x.{{ .Field.Name }}))
+	}
+{{ end }}
+
+{{ define "regex_err" }}
+var {{ .Field.Name }}Regex *regexp.Regexp = regexp.MustCompile("{{ .Value }}")
+var {{ .Field.Name }}RegexErr func(received any) gkerror.ValidationErr = func(received any) gkerror.ValidationErr {
+		return gkerror.NewValidationErr("{{ .Field.FormName }}",  received, "{{ .Value }}", "{{ .ValidatorSpec.FmtErr }}" )
+}
+{{ end }}
+

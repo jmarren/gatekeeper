@@ -18,8 +18,9 @@ func NewField(spec *FieldSpec, obj *Object) *Field {
 		spec.FormName = spec.Name
 	}
 
+	// import strconv if the kind is an int
 	if spec.Kind == "int" {
-		obj.imports.Add(STRCONV)
+		obj.Import(STRCONV)
 	}
 
 	// set default KindErrs
@@ -46,29 +47,33 @@ func NewField(spec *FieldSpec, obj *Object) *Field {
 }
 
 func (f *Field) WriteValidation() {
-	var err error
-	_, err = f.Obj.builder.WriteString("\n	// " + f.Name + " validation")
+	// write validation comment
+	_, err := f.Obj.builder.WriteString("\n	// " + f.Name + " validation")
 	util.PanicIf(err)
 
+	// assign the field to the formValue
 	f.WriteAssignment()
 
+	// write all the validators
 	for _, v := range f.Validators {
 		v.WriteValidation()
 	}
 }
 
+func (f *Field) execTemplate(name string) {
+	err := templates.Tmpl.ExecuteTemplate(f.Obj.builder, name, f)
+	util.PanicIf(err)
+}
+
 func (f *Field) WriteAssignment() {
-	var err error
 	switch f.Kind {
 	case "int":
-		err = templates.Tmpl.ExecuteTemplate(f.Obj.builder, "int", f)
+		f.execTemplate("int")
 	case "string":
-		err = templates.Tmpl.ExecuteTemplate(f.Obj.builder, "string", f)
+		f.execTemplate("string")
 	default:
 		panic("kind must be string or int")
 	}
-
-	util.PanicIf(err)
 }
 
 func (f *Field) WriteOuter() {

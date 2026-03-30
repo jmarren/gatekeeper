@@ -16,6 +16,10 @@ type Object struct {
 	Imports []string
 }
 
+func (o *Object) Import(imports ...string) {
+	o.imports.Add(imports...)
+}
+
 func NewObject(spec *ObjectSpec) *Object {
 
 	builder := new(strings.Builder)
@@ -28,14 +32,14 @@ func NewObject(spec *ObjectSpec) *Object {
 	}
 
 	// add default imports
-	o.imports.Add(HTTP)
-	o.imports.Add(GATEKEEPER_ERR)
+	o.Import(HTTP, GATEKEEPER_ERR)
 
+	// create fields from field specs
 	for _, fs := range spec.FieldSpecs {
-		field := NewField(fs, o)
-		o.Fields = append(o.Fields, field)
+		o.Fields = append(o.Fields, NewField(fs, o))
 	}
 
+	// set imports slice
 	o.Imports = o.imports.ToSlice()
 
 	return o
@@ -63,23 +67,25 @@ func (o *Object) writeFile() {
 
 }
 
+func (o *Object) execTemplate(name string) {
+	err := templates.Tmpl.ExecuteTemplate(o.builder, name, o)
+	util.PanicIf(err)
+}
+
 func (o *Object) Write() {
 	var err error
 
-	// TODO: write header
-	err = templates.Tmpl.ExecuteTemplate(o.builder, "header", o)
-	util.PanicIf(err)
+	// write header
+	o.execTemplate("header")
 
 	// write errors
 	o.writeErrors()
 
 	// write type definition
-	err = templates.Tmpl.ExecuteTemplate(o.builder, "typedef", o)
-	util.PanicIf(err)
+	o.execTemplate("typedef")
 
 	// write open constructor
-	err = templates.Tmpl.ExecuteTemplate(o.builder, "constructor", o)
-	util.PanicIf(err)
+	o.execTemplate("constructor")
 
 	// write validation for each field
 	o.writeFields()
@@ -89,8 +95,7 @@ func (o *Object) Write() {
 	util.PanicIf(err)
 
 	// write handler
-	err = templates.Tmpl.ExecuteTemplate(o.builder, "handler", o)
-	util.PanicIf(err)
+	o.execTemplate("handler")
 
 	// write the builder to file
 	o.writeFile()
